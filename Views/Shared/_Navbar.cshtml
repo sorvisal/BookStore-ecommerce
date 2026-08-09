@@ -1,0 +1,37 @@
+﻿<nav class="navbar navbar-expand-lg bg-white shadow-sm">
+    <div class="container">
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <!-- ប្រើ mx-auto នៅទីនេះគឺគ្រប់គ្រាន់ហើយ -->
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    <a class="nav-link fw-bold" asp-controller="Home" asp-action="Index">ទំព័រដើម</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle fw-bold" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        ប្រភេទសៀវភៅ
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" asp-controller="Category" asp-action="Index">All Categories</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <!-- បន្ថែមបញ្ជី Category ផ្សេងទៀតរបស់អ្នកនៅទីនេះ -->
+                        <li><a class="dropdown-item" href="#">Novels</a></li>
+                        <li><a class="dropdown-item" href="#">Technology</a></li>
+                        <li><a class="dropdown-item" href="#">History</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-bold" asp-controller="Publisher" asp-action="Index">គ្រឹះស្ថានបោះពុម្ភ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-bold" asp-controller="AllBook" asp-action="Index">សៀវភៅទាំងអស់</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-bold" asp-controller="About" asp-action="Index">អំពីយើង</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-bold" asp-controller="Contect" asp-action="Index">ទំនាក់ទំនង</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

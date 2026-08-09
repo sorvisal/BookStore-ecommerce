@@ -1,0 +1,34 @@
+﻿@model IEnumerable<dynamic>
+@* ប្តូរ dynamic ទៅជា Class Category របស់អ្នកពេលក្រោយ *@
+
+@{
+    ViewData["Title"] = "ប្រភេទសៀវភៅ";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-warning text-white py-3">
+                    <h5 class="mb-0"><i class="bi bi-list"></i> ប្រភេទសៀវភៅ</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <a href="#" class="text-decoration-none text-dark">» ផ្នែកគំនិតនវានុវត្តន៍</a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="#" class="text-decoration-none text-dark">» ជំនួញ និងធុរកិច្ច</a>
+                    </li>
+                    <!-- បន្ថែមធាតុផ្សេងៗទៀត -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <h3>ទំព័រប្រភេទសៀវភៅ</h3>
+            <p>សូមជ្រើសរើសប្រភេទសៀវភៅពីខាងឆ្វេង។</p>
+        </div>
+    </div>
+</div>

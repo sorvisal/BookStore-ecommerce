@@ -19,6 +19,5 @@ namespace E_Commerce.Models
         public bool Status { get; set; } = true;
 
         public ICollection<Order> Orders { get; set; } = new List<Order>();
-        public ICollection<Delivery> Deliveries { get; set; } = new List<Delivery>();
     }
 }

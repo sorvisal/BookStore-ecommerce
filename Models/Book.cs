@@ -57,9 +57,7 @@ namespace E_Commerce.Models
 
         public ICollection<BookAuthor> BookAuthors { get; set; } = new List<BookAuthor>();
         public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
-        public ICollection<WishlistItem> WishlistItems { get; set; } = new List<WishlistItem>();
         public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
-        public ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new List<InventoryTransaction>();
     }
 }

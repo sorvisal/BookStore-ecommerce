@@ -77,7 +77,5 @@ namespace E_Commerce.Models
 
         public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
         public ICollection<Payment> Payments { get; set; } = new List<Payment>();
-        public ICollection<Delivery> Deliveries { get; set; } = new List<Delivery>();
-        public ICollection<OrderCoupon> OrderCoupons { get; set; } = new List<OrderCoupon>();
     }
 }
