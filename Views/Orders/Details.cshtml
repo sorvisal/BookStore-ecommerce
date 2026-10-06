@@ -67,7 +67,7 @@
                 <button type="button" class="btn btn-outline-dark" onclick="window.print()"><i class="bi bi-printer"></i> @L["Print invoice"]</button>
                 @if (Model.Status == "Pending")
                 {
-                    <form asp-action="Cancel" asp-route-id="@Model.OrderId" method="post" onsubmit="return confirm('@confirmCancel')">
+                    <form asp-action="Cancel" asp-route-id="@Model.OrderId" method="post" data-confirm="@confirmCancel">
                         <button class="btn btn-outline-danger w-100"><i class="bi bi-x-circle"></i> @L["Cancel order"]</button>
                     </form>
                 }

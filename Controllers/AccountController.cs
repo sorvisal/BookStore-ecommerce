@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using E_Commerce.Data;
 using E_Commerce.Models;
+using E_Commerce.Services;
 using E_Commerce.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace E_Commerce.Controllers
 {
@@ -16,12 +18,17 @@ namespace E_Commerce.Controllers
         private readonly BookStoreDbContext _context;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly ILogger<AccountController> _logger;
+        private readonly IWebHostEnvironment _env;
+        private readonly IStringLocalizer<SharedResource> _l;
 
-        public AccountController(BookStoreDbContext context, IPasswordHasher<User> passwordHasher, ILogger<AccountController> logger)
+        public AccountController(BookStoreDbContext context, IPasswordHasher<User> passwordHasher,
+            ILogger<AccountController> logger, IWebHostEnvironment env, IStringLocalizer<SharedResource> localizer)
         {
             _context = context;
             _passwordHasher = passwordHasher;
             _logger = logger;
+            _env = env;
+            _l = localizer;
         }
 
         // ------------------------------------------------------------------ Login
@@ -183,7 +190,8 @@ namespace E_Commerce.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
                 new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
-                new Claim(ClaimTypes.Role, string.IsNullOrWhiteSpace(user.Role) ? "Customer" : user.Role)
+                new Claim(ClaimTypes.Role, string.IsNullOrWhiteSpace(user.Role) ? "Customer" : user.Role),
+                new Claim("ProfileImage", user.ProfileImage ?? string.Empty)
             };
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -198,6 +206,128 @@ namespace E_Commerce.Controllers
                     IsPersistent = rememberMe,
                     ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
                 });
+        }
+
+        // ---------------------------------------------------------------- Profile
+        private async Task<User?> CurrentUserAsync()
+        {
+            var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(claim, out var id)) return null;
+            return await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);
+        }
+
+        // Re-signs the user in with fresh claims (name, photo) after a profile change
+        private async Task RefreshSignInAsync(User user)
+        {
+            var auth = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await SignInUserAsync(user, auth?.Properties?.IsPersistent ?? false);
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await CurrentUserAsync();
+            if (user == null) return Challenge();
+            return View(new ProfileViewModel
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Phone = user.Phone,
+                Gender = user.Gender,
+                DateOfBirth = user.DateOfBirth,
+                Address = user.Address,
+                Email = user.Email,
+                ProfileImage = user.ProfileImage,
+                MemberSince = user.CreatedAt
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Profile(ProfileViewModel model)
+        {
+            var user = await CurrentUserAsync();
+            if (user == null) return Challenge();
+
+            if (model.Photo != null && model.Photo.Length > 0)
+            {
+                var (url, error) = await AvatarHelper.SaveAsync(_env, model.Photo, user.ProfileImage);
+                if (error != null)
+                    ModelState.AddModelError(nameof(ProfileViewModel.Photo), error);
+                else
+                    user.ProfileImage = url;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.Email = user.Email;
+                model.ProfileImage = user.ProfileImage;
+                model.MemberSince = user.CreatedAt;
+                return View(model);
+            }
+
+            user.FirstName = model.FirstName.Trim();
+            user.LastName = model.LastName.Trim();
+            user.Phone = model.Phone;
+            user.Gender = model.Gender;
+            user.DateOfBirth = model.DateOfBirth;
+            user.Address = model.Address;
+            user.UpdatedAt = DateTime.Now;
+            await _context.SaveChangesAsync();
+
+            await RefreshSignInAsync(user);
+            TempData["Success"] = _l["Profile updated."].Value;
+            return RedirectToAction(nameof(Profile));
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            var user = await CurrentUserAsync();
+            if (user == null) return Challenge();
+
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault()?.ErrorMessage
+                                    ?? "Please check the passwords and try again.";
+                return RedirectToAction(nameof(Profile));
+            }
+
+            var verification = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash ?? string.Empty, model.CurrentPassword);
+            if (verification == PasswordVerificationResult.Failed)
+            {
+                TempData["Error"] = _l["Current password is incorrect."].Value;
+                return RedirectToAction(nameof(Profile));
+            }
+
+            user.PasswordHash = _passwordHasher.HashPassword(user, model.NewPassword);
+            user.UpdatedAt = DateTime.Now;
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = _l["Password changed."].Value;
+            return RedirectToAction(nameof(Profile));
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemovePhoto()
+        {
+            var user = await CurrentUserAsync();
+            if (user == null) return Challenge();
+
+            AvatarHelper.DeleteFile(_env, user.ProfileImage);
+            user.ProfileImage = null;
+            user.UpdatedAt = DateTime.Now;
+            await _context.SaveChangesAsync();
+
+            await RefreshSignInAsync(user);
+            TempData["Success"] = _l["Photo removed."].Value;
+            return RedirectToAction(nameof(Profile));
         }
     }
 }

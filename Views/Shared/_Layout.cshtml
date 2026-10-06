@@ -90,6 +90,23 @@
             });
         });
     </script>
+    <script>
+        // data-confirm: ask before submitting a form or following a link/button.
+        // The message lives in the attribute (Razor-encoded), so apostrophes
+        // and non-Latin text never break the JavaScript.
+        document.addEventListener('submit', function (e) {
+            var f = e.target;
+            if (f.hasAttribute && f.hasAttribute('data-confirm') && !confirm(f.getAttribute('data-confirm'))) {
+                e.preventDefault();
+            }
+        });
+        document.addEventListener('click', function (e) {
+            var t = e.target.closest('a[data-confirm], button[data-confirm]');
+            if (t && !t.closest('form[data-confirm]') && !confirm(t.getAttribute('data-confirm'))) {
+                e.preventDefault();
+            }
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

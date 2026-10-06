@@ -106,7 +106,7 @@ namespace E_Commerce.Controllers
                 .ToList();
 
             var averageRating = reviewsWithUser.Any(r => r.Rating.HasValue)
-                ? reviewsWithUser.Where(r => r.Rating.HasValue).Average(r => r.Rating.Value)
+                ? reviewsWithUser.Where(r => r.Rating.HasValue).Average(r => r.Rating!.Value)
                 : 0;
 
             var relatedBooks = _context.Books

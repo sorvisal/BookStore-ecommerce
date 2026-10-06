@@ -233,6 +233,9 @@
 .adm-top-user {
     color: var(--muted);
     font-size: .92rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
 }
 
 .adm-body {

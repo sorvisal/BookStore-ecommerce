@@ -15,6 +15,14 @@ builder.Services.AddDbContext<BookStoreDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+// Do not entity-encode Khmer text in Razor output (keeps it readable and
+// prevents HTML entities from leaking into JavaScript strings)
+builder.Services.AddWebEncoders(o => o.TextEncoderSettings =
+    new System.Text.Encodings.Web.TextEncoderSettings(
+        System.Text.Unicode.UnicodeRanges.BasicLatin,
+        System.Text.Unicode.UnicodeRanges.Khmer,
+        System.Text.Unicode.UnicodeRanges.KhmerSymbols));
+
 // Localization (English / Khmer UI, cookie-based, URLs stay unchanged)
 builder.Services.AddLocalization(o => o.ResourcesPath = "Resources");
 builder.Services.AddControllersWithViews()

@@ -1,0 +1,142 @@
+/* Book Cambodia profile page (Views/Account/Profile.cshtml) — uses site.css variables */
+
+.pf-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.6rem;
+    margin-bottom: 1.4rem;
+}
+
+    .pf-card h5 {
+        margin-bottom: 1.1rem;
+    }
+
+/* ---- Left: photo card ---- */
+.pf-photo {
+    text-align: center;
+}
+
+    .pf-photo .avatar-120 {
+        margin-bottom: 1rem;
+    }
+
+.pf-photo-preview {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    margin-bottom: 1rem;
+    display: none;
+}
+
+.pf-name {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    color: var(--text);
+    margin-bottom: .15rem;
+}
+
+.pf-email {
+    color: var(--muted);
+    font-size: .9rem;
+}
+
+.pf-since {
+    color: var(--muted);
+    font-size: .85rem;
+    margin-top: .5rem;
+    padding-top: .8rem;
+    border-top: 1px solid var(--border);
+}
+
+.pf-photo-actions {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    margin-top: 1rem;
+}
+
+/* ---- Green pill buttons (match site.css) ---- */
+.pf-btn {
+    display: inline-block;
+    background: var(--g);
+    border: 1px solid var(--g);
+    color: var(--on-g);
+    border-radius: 999px;
+    font-weight: 700;
+    padding: .55rem 1.4rem;
+    box-shadow: 0 8px 20px rgba(18, 146, 58, .25);
+    transition: .2s;
+    cursor: pointer;
+}
+
+    .pf-btn:hover {
+        background: var(--g-d);
+        border-color: var(--g-d);
+        color: var(--on-g);
+    }
+
+.pf-btn-outline {
+    display: inline-block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 999px;
+    font-weight: 600;
+    padding: .5rem 1.3rem;
+    transition: .2s;
+    cursor: pointer;
+}
+
+    .pf-btn-outline:hover {
+        border-color: var(--g);
+        color: var(--g);
+    }
+
+.pf-file {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+    .pf-file input[type="file"] {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+/* ---- Password eye ---- */
+.pf-pass {
+    position: relative;
+}
+
+    .pf-pass .form-control {
+        padding-right: 2.8rem;
+    }
+
+.pf-eye {
+    position: absolute;
+    right: .5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    padding: .3rem;
+    cursor: pointer;
+}
+
+    .pf-eye:hover {
+        color: var(--g);
+    }
+
+@media (max-width: 576px) {
+    .pf-card {
+        padding: 1.2rem;
+    }
+}

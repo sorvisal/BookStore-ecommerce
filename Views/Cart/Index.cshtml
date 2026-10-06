@@ -4,6 +4,8 @@
 @model E_Commerce.ViewModels.CartViewModel
 @{
     ViewData["Title"] = "Shopping cart";
+    var removeConfirm = L["Remove this item from your cart?"].Value;
+    var clearConfirm = L["Remove all items from your cart?"].Value;
 }
 <link rel="stylesheet" href="~/css/cart.css" asp-append-version="true" />
 
@@ -65,14 +67,14 @@
 
                         <div class="cart-line-sub">$@line.Subtotal.ToString("N2")</div>
 
-                        <form asp-controller="Cart" asp-action="Remove" method="post" class="remove-form">
+                        <form asp-controller="Cart" asp-action="Remove" method="post" class="remove-form" data-confirm="@removeConfirm">
                             <input type="hidden" name="cartItemId" value="@line.CartItemId" />
                             <button type="submit" class="trash-btn" aria-label="Remove item"><i class="bi bi-trash3"></i></button>
                         </form>
                     </div>
                 }
 
-                <form asp-controller="Cart" asp-action="Clear" method="post" class="clear-form">
+                <form asp-controller="Cart" asp-action="Clear" method="post" class="clear-form" data-confirm="@clearConfirm">
                     <button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash3"></i> @L["Clear cart"]</button>
                 </form>
             </div>
@@ -132,18 +134,6 @@
                 });
             });
             input.addEventListener('change', function () { f.submit(); });
-        });
-
-        // Confirm before removing a line / clearing the cart
-        document.querySelectorAll('.remove-form').forEach(function (f) {
-            f.addEventListener('submit', function (e) {
-                if (!confirm('Remove this item from your cart?')) e.preventDefault();
-            });
-        });
-        document.querySelectorAll('.clear-form').forEach(function (f) {
-            f.addEventListener('submit', function (e) {
-                if (!confirm('Remove all items from your cart?')) e.preventDefault();
-            });
         });
     })();
 </script>

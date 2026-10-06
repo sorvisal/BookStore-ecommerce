@@ -4,6 +4,42 @@
 @model E_Commerce.ViewModels.HomeViewModel
 @{
     ViewData["Title"] = "Home";
+    var faqs = new (string Q, string A)[]
+    {
+        ("How long does delivery take?",
+         "Orders in Phnom Penh usually arrive within 1 to 2 days, and other provinces within 3 to 5 working days. Orders over $30 get free delivery."),
+        ("What payment methods do you accept?",
+         "Cash on Delivery, ABA Pay and credit card (you can pay when you receive your books)."),
+        ("Can I cancel or change my order?",
+         "You can cancel an order yourself from My orders while its status is Pending. After it is processed, please contact us."),
+        ("What if a book is out of stock?",
+         "Books marked \"Out of stock\" cannot be ordered. Contact us and we will tell you when it is available again."),
+        ("Do you sell books in Khmer and English?",
+         "Yes. We have Khmer and English books in many categories such as self-development, science, business, technology and children's books."),
+        ("How can I track my order?",
+         "Sign in, open My orders and choose your order to see its status (Pending, Processing, Shipped, Delivered).")
+    };
+    var faqJsonLd = System.Text.Json.JsonSerializer.Serialize(
+        new Dictionary<string, object>
+        {
+            ["@context"] = "https://schema.org",
+            ["@type"] = "FAQPage",
+            ["mainEntity"] = faqs.Select(f => new Dictionary<string, object>
+            {
+                ["@type"] = "Question",
+                ["name"] = L[f.Q].Value,
+                ["acceptedAnswer"] = new Dictionary<string, object>
+                {
+                    ["@type"] = "Answer",
+                    ["text"] = L[f.A].Value
+                }
+            }).ToList()
+        },
+        new System.Text.Json.JsonSerializerOptions
+        {
+            WriteIndented = true,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        });
 }
 
 <partial name="_HeroBanner" />
@@ -30,26 +66,41 @@
         </section>
     }
 
-    @if (Model.NewArrivals.Any())
-    {
-        <section class="mb-5 sec-band">
-            <div class="sec-head d-flex justify-content-between align-items-end flex-wrap gap-2">
-                <div>
-                    <span class="sec-eyebrow">@L["Fresh this week"]</span>
-                    <h3 class="sec-title">@L["New"] <span class="hl">@L["Arrivals"]</span></h3>
+    <section class="mb-5 sec-band" id="faq">
+        <link rel="stylesheet" href="~/css/faq.css" asp-append-version="true" />
+        <div class="row g-4 align-items-start">
+            <div class="col-lg-5">
+                <span class="sec-eyebrow">@L["Got questions?"]</span>
+                <h3 class="sec-title">@L["Frequently"] <span class="hl">@L["Asked Questions"]</span></h3>
+                <p class="text-muted mt-3">@L["Can't find what you are looking for? Our team is happy to help."]</p>
+                <a class="btn btn-accent mt-2" asp-controller="Contact" asp-action="Index">@L["Contact us"]</a>
+                <div class="faq-contact"><i class="bi bi-headset"></i> admin@bookstore.com</div>
+            </div>
+            <div class="col-lg-7">
+                <div class="accordion faq-acc" id="faqAcc">
+                    @for (var i = 0; i < faqs.Length; i++)
+                    {
+                        var open = i == 0;
+                        var id = $"faq{i + 1}";
+                        <div class="accordion-item">
+                            <h4 class="accordion-header">
+                                <button class="accordion-button @(open ? "" : "collapsed")" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#@id"
+                                        aria-expanded="@(open ? "true" : "false")" aria-controls="@id">
+                                    <span class="faq-q">@L[faqs[i].Q]</span>
+                                    <span class="faq-icon"><i class="bi bi-plus-lg"></i></span>
+                                </button>
+                            </h4>
+                            <div id="@id" class="accordion-collapse collapse @(open ? "show" : "")" data-bs-parent="#faqAcc">
+                                <div class="accordion-body">@L[faqs[i].A]</div>
+                            </div>
+                        </div>
+                    }
                 </div>
-                <a class="btn-soft btn" asp-controller="Books" asp-action="Index" asp-route-sortBy="newest">@L["View all"] <i class="bi bi-arrow-right"></i></a>
             </div>
-            <div class="row g-3">
-                @foreach (var book in Model.NewArrivals)
-                {
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <partial name="_BookCard" model="book" />
-                    </div>
-                }
-            </div>
-        </section>
-    }
+        </div>
+        <script type="application/ld+json">@Html.Raw(faqJsonLd)</script>
+    </section>
 
     @if (Model.BestSellers.Any())
     {

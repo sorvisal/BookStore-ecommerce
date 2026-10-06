@@ -1,0 +1,102 @@
+/* Book Cambodia home FAQ section (Views/Home/Index.cshtml) — uses site.css variables */
+
+.faq-contact {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: .9rem;
+}
+
+    .faq-contact i {
+        color: var(--g);
+        font-size: 1.1rem;
+    }
+
+/* Accordion items as separate cards */
+.faq-acc .accordion-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: .75rem;
+    transition: box-shadow .25s, border-color .25s;
+}
+
+    .faq-acc .accordion-item:hover {
+        box-shadow: var(--shadow);
+    }
+
+    /* The open card gets a green border */
+    .faq-acc .accordion-item:has(.accordion-collapse.show) {
+        border-color: var(--g);
+    }
+
+.faq-acc .accordion-button {
+    background: var(--surface);
+    color: var(--text);
+    font-weight: 700;
+    box-shadow: none;
+    gap: .75rem;
+    padding: 1rem 1.2rem;
+    transition: color .2s;
+}
+
+    .faq-acc .accordion-button:focus {
+        box-shadow: 0 0 0 3px rgba(18, 146, 58, .18);
+        border-color: var(--g);
+        z-index: 3;
+    }
+
+    /* Open question turns green */
+    .faq-acc .accordion-button:not(.collapsed) {
+        background: var(--surface);
+        color: var(--g);
+        box-shadow: none;
+    }
+
+    /* Hide the default Bootstrap chevron, we use our own round icon */
+    .faq-acc .accordion-button::after {
+        display: none;
+    }
+
+.faq-q {
+    line-height: 1.4;
+}
+
+.faq-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    display: grid;
+    place-items: center;
+    color: var(--g);
+    flex-shrink: 0;
+    margin-left: auto;
+    transition: transform .25s, background .25s, color .25s, border-color .25s;
+}
+
+.faq-acc .accordion-button:not(.collapsed) .faq-icon {
+    background: var(--g);
+    border-color: var(--g);
+    color: var(--on-g);
+    transform: rotate(45deg);
+}
+
+.faq-acc .accordion-body {
+    color: var(--muted);
+    line-height: 1.6;
+    padding: 0 1.2rem 1.1rem;
+}
+
+@media (max-width: 576px) {
+    .faq-acc .accordion-button {
+        padding: .85rem 1rem;
+    }
+
+    .faq-acc .accordion-body {
+        padding: 0 1rem .9rem;
+    }
+}

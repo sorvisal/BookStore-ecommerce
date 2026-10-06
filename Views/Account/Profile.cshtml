@@ -1,0 +1,159 @@
+@using E_Commerce.Services
+@model E_Commerce.ViewModels.ProfileViewModel
+@{
+    ViewData["Title"] = L["Profile"].Value;
+    var fullName = $"{Model.FirstName} {Model.LastName}".Trim();
+    var avatarModel = new E_Commerce.ViewModels.AvatarViewModel
+    {
+        ImageUrl = AvatarHelper.ResolveUrl(Model.ProfileImage),
+        Initials = AvatarHelper.Initials(fullName),
+        CssClass = "avatar-120"
+    };
+}
+<link rel="stylesheet" href="~/css/profile.css" asp-append-version="true" />
+
+<div class="container py-4">
+    <h2 class="mb-4">@L["Profile"]</h2>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="pf-card pf-photo">
+                <partial name="_Avatar" model="avatarModel" />
+                <img id="pfPreview" class="pf-photo-preview" alt="" />
+                <div class="pf-name">@fullName</div>
+                <div class="pf-email">@Model.Email</div>
+                <div class="pf-since"><i class="bi bi-calendar3"></i> @L["Member since"] @(Model.MemberSince?.ToString("dd MMM yyyy") ?? "-")</div>
+
+                <div class="pf-photo-actions">
+                    <form asp-controller="Account" asp-action="Profile" method="post" enctype="multipart/form-data" id="pfPhotoForm">
+                        <input type="hidden" asp-for="FirstName" />
+                        <input type="hidden" asp-for="LastName" />
+                        <label class="pf-btn-outline pf-file w-100">
+                            <i class="bi bi-camera"></i> @L["Change photo"]
+                            <input type="file" asp-for="Photo" accept=".jpg,.jpeg,.png,.webp" />
+                        </label>
+                        <span asp-validation-for="Photo" class="text-danger small"></span>
+                    </form>
+                    @if (!string.IsNullOrWhiteSpace(avatarModel.ImageUrl))
+                    {
+                        <form asp-controller="Account" asp-action="RemovePhoto" method="post">
+                            <button type="submit" class="pf-btn-outline w-100"><i class="bi bi-trash3"></i> @L["Remove photo"]</button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="pf-card">
+                <h5>@L["Personal information"]</h5>
+                <form asp-controller="Account" asp-action="Profile" method="post" enctype="multipart/form-data">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="FirstName" class="form-label">@L["First name"]</label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="LastName" class="form-label">@L["Last name"]</label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Phone" class="form-label">@L["Phone"]</label>
+                            <input asp-for="Phone" class="form-control" />
+                            <span asp-validation-for="Phone" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Gender" class="form-label">@L["Gender"]</label>
+                            <select asp-for="Gender" class="form-select">
+                                <option value="">-</option>
+                                <option value="Male">@L["Male"]</option>
+                                <option value="Female">@L["Female"]</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="DateOfBirth" class="form-label">@L["Date of birth"]</label>
+                            <input asp-for="DateOfBirth" class="form-control" type="date" />
+                            <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label">@L["Email"]</label>
+                            <input asp-for="Email" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Address" class="form-label">@L["Address"]</label>
+                        <input asp-for="Address" class="form-control" />
+                        <span asp-validation-for="Address" class="text-danger small"></span>
+                    </div>
+                    <button type="submit" class="pf-btn"><i class="bi bi-check-lg"></i> @L["Save changes"]</button>
+                </form>
+            </div>
+
+            <div class="pf-card">
+                <h5>@L["Change password"]</h5>
+                <form asp-controller="Account" asp-action="ChangePassword" method="post">
+                    <div class="mb-3 pf-pass">
+                        <label class="form-label" for="cp1">@L["Current password"]</label>
+                        <input name="CurrentPassword" id="cp1" type="password" class="form-control" autocomplete="current-password" required />
+                        <button type="button" class="pf-eye" data-eye="cp1" aria-label="Show password"><i class="bi bi-eye"></i></button>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6 pf-pass">
+                            <label class="form-label" for="cp2">@L["New password"]</label>
+                            <input name="NewPassword" id="cp2" type="password" class="form-control" autocomplete="new-password" required minlength="6" />
+                            <button type="button" class="pf-eye" data-eye="cp2" aria-label="Show password"><i class="bi bi-eye"></i></button>
+                        </div>
+                        <div class="col-md-6 pf-pass">
+                            <label class="form-label" for="cp3">@L["Confirm password"]</label>
+                            <input name="ConfirmPassword" id="cp3" type="password" class="form-control" autocomplete="new-password" required minlength="6" />
+                            <button type="button" class="pf-eye" data-eye="cp3" aria-label="Show password"><i class="bi bi-eye"></i></button>
+                        </div>
+                    </div>
+                    <button type="submit" class="pf-btn"><i class="bi bi-key"></i> @L["Change password"]</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        // Live photo preview, then submit automatically
+        var input = document.getElementById('Photo');
+        var form = document.getElementById('pfPhotoForm');
+        var preview = document.getElementById('pfPreview');
+        if (input) {
+            input.addEventListener('change', function () {
+                var f = input.files && input.files[0];
+                if (!f) return;
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'inline-block';
+                    form.submit();
+                };
+                reader.readAsDataURL(f);
+            });
+        }
+
+        // Show/hide password buttons
+        document.querySelectorAll('.pf-eye').forEach(function (b) {
+            b.addEventListener('click', function () {
+                var i = document.getElementById(b.getAttribute('data-eye'));
+                var show = i.type === 'password';
+                i.type = show ? 'text' : 'password';
+                b.querySelector('i').className = show ? 'bi bi-eye-slash' : 'bi bi-eye';
+            });
+        });
+    })();
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

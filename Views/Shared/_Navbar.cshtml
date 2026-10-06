@@ -1,5 +1,6 @@
 ﻿@using Microsoft.Extensions.Localization
 @using E_Commerce
+@using E_Commerce.Services
 @inject IStringLocalizer<SharedResource> L
 @{
     var ctrl = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
@@ -11,6 +12,12 @@
     var isKm = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "km";
     var returnUrl = Context.Request.Path + Context.Request.QueryString.Value;
     var searchPlaceholder = L["Search books or authors..."].Value;
+    var avatarModel = new E_Commerce.ViewModels.AvatarViewModel
+    {
+        ImageUrl = AvatarHelper.ResolveUrl(User.FindFirst("ProfileImage")?.Value),
+        Initials = AvatarHelper.Initials(fullName),
+        CssClass = "avatar-34"
+    };
 }
 <link rel="stylesheet" href="~/css/navbar.css" asp-append-version="true" />
 
@@ -44,7 +51,7 @@
                             <input type="hidden" name="culture" value="en" />
                             <input type="hidden" name="returnUrl" value="@returnUrl" />
                             <button type="submit" class="dropdown-item">
-                                <img src="https://flagcdn.com/w40/gb.png" alt="" /> English
+                                <img src="https://flagcdn.com/w40/gb.png" alt="" /> <span>English</span>
                                 @if (!isKm)
                                 {
                                     <i class="bi bi-check-lg nb-lang-check"></i>
@@ -57,7 +64,7 @@
                             <input type="hidden" name="culture" value="km" />
                             <input type="hidden" name="returnUrl" value="@returnUrl" />
                             <button type="submit" class="dropdown-item">
-                                <img src="https://flagcdn.com/w40/kh.png" alt="" /> ខ្មែរ (Khmer)
+                                <img src="https://flagcdn.com/w40/kh.png" alt="" /> <span>ខ្មែរ (Khmer)</span>
                                 @if (isKm)
                                 {
                                     <i class="bi bi-check-lg nb-lang-check"></i>
@@ -69,20 +76,29 @@
             </div>
 
             @await Component.InvokeAsync("CartSummary")
+
             @if (User.Identity?.IsAuthenticated == true)
             {
                 <div class="dropdown">
-                    <a class="nb-user dropdown-toggle" data-bs-toggle="dropdown" role="button"><span class="nb-avatar">@initials</span><span class="d-none d-sm-inline">@first</span></a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li class="px-3 py-2 small text-muted">@L["Signed in as"]<br /><b class="text-dark">@fullName</b></li>
+                    <a class="nb-user dropdown-toggle" data-bs-toggle="dropdown" role="button"><partial name="_Avatar" model="avatarModel" /><span class="d-none d-sm-inline">@first</span></a>
+                    <ul class="dropdown-menu dropdown-menu-end nb-user-menu">
+                        <li class="nb-user-head">
+                            <small>@L["Signed in as"]</small>
+                            <b>@fullName</b>
+                        </li>
                         <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" asp-controller="Orders" asp-action="Index"><i class="bi bi-receipt"></i>@L["My orders"]</a></li>
+                        <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile"><i class="bi bi-person-gear"></i><span>@L["Profile"]</span></a></li>
+                        <li><a class="dropdown-item" asp-controller="Orders" asp-action="Index"><i class="bi bi-receipt"></i><span>@L["My orders"]</span></a></li>
                         @if (User.IsInRole("Admin"))
                         {
-                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2"></i>@L["Dashboard"]</a></li>
+                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2"></i><span>@L["Dashboard"]</span></a></li>
                         }
                         <li><hr class="dropdown-divider" /></li>
-                        <li><form asp-controller="Account" asp-action="Logout" method="post"><button class="dropdown-item text-danger"><i class="bi bi-box-arrow-right text-danger"></i>@L["Logout"]</button></form></li>
+                        <li>
+                            <form asp-controller="Account" asp-action="Logout" method="post">
+                                <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right"></i><span>@L["Logout"]</span></button>
+                            </form>
+                        </li>
                     </ul>
                 </div>
             }
@@ -92,6 +108,7 @@
                 <a class="nb-login" asp-controller="Account" asp-action="Login">@L["Log In"]</a>
                 <a class="nb-signup" asp-controller="Account" asp-action="Register">@L["Sign up"]</a>
             }
+
             <button class="nb-icon nb-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nbMenu" aria-label="Menu"><i class="bi bi-list"></i></button>
         </div>
     </div>

@@ -54,7 +54,7 @@ namespace E_Commerce.Controllers
                     Book = b,
                     TotalQty = b.OrderDetails
                         .Where(od => od.Order != null)
-                        .Where(od => od.Order.OrderStatus != "Cancelled" && od.Order.Status != "Cancelled")
+                        .Where(od => od.Order!.OrderStatus != "Cancelled" && od.Order.Status != "Cancelled")
                         .Sum(od => od.Quantity)
                 })
                 .OrderByDescending(x => x.TotalQty)

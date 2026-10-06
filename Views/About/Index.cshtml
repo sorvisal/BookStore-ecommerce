@@ -6,25 +6,30 @@
 }
 
 <div class="container py-4">
-    <div class="mb-4">
-        <div class="sec-head">
-            <span class="sec-eyebrow">@L["About us"]</span>
-            <h1 class="sec-title">@L["About"] <span class="hl">Book Cambodia</span></h1>
-        </div>
-        <p class="text-muted">@L["Your trusted online bookstore in Cambodia."]</p>
-    </div>
-
-    <div class="row mb-4 align-items-center">
+    <div class="row g-4 mb-4 align-items-start">
+        <!-- Left: title + story -->
         <div class="col-md-8">
+            <div class="mb-4">
+                <div class="sec-head">
+                    <span class="sec-eyebrow">@L["About us"]</span>
+                    <h1 class="sec-title">@L["About"] <span class="hl">Book Cambodia</span></h1>
+                </div>
+                <p class="text-muted">@L["Book Cambodia is a modern online bookstore created by Visal, a Software Developer, with the vision of making books and knowledge more accessible to readers across Cambodia."]</p>
+            </div>
+
             <h2 class="h4 mb-3">@L["Our story"]</h2>
             <p>@L["BookCambodia is a Cambodian online bookstore built to make quality books more accessible across the country. We connect readers with a wide range of titles that inform, inspire, and entertain."]</p>
             <p>@L["From Phnom Penh to the provinces, we aim to deliver great reading experiences with fair prices and fast, reliable service."]</p>
         </div>
-        <div class="col-md-4 text-center">
-            <img src="~/images/placeholder-book.png" alt="Book" class="img-fluid" style="max-height: 200px; border-radius: 14px;">
+
+        <!-- Right: founder image, top aligned with the title -->
+        <div class="col-md-4 text-center text-md-end">
+            <img src="~/images/FounderLogo.png"
+                 alt="Book Cambodia founder"
+                 class="img-fluid"
+                 style="width: 100%; max-width: 320px; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 14px;">
         </div>
     </div>
-
     <div class="row g-4 mb-4">
         <div class="col-md-4">
             <div class="card h-100">

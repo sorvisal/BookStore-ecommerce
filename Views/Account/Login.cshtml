@@ -7,7 +7,7 @@
 }
 <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
 
-<div class="au-wrap">
+<div class="au-wrap au-compact">
     <aside class="au-brand">
         <h2>@L["Welcome back"]</h2>
         <p>@L["Sign in to keep exploring books and track your orders."]</p>
@@ -19,9 +19,6 @@
     </aside>
 
     <section class="au-form-side">
-        <a class="au-logo" asp-controller="Home" asp-action="Index" aria-label="Book Cambodia">
-            <partial name="_BrandLogo" />
-        </a>
         <h1 class="au-title">@L["Login"]</h1>
         <p class="au-sub">@L["Enter your email and password to continue."]</p>
 

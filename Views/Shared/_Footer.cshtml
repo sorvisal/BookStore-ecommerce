@@ -1,32 +1,251 @@
 ﻿@using Microsoft.Extensions.Localization
 @using E_Commerce
 @inject IStringLocalizer<SharedResource> L
-<footer class="footer mt-5 py-4" style="background-color: var(--text); color: var(--bg);">
+
+<style>
+    .bc-footer {
+        position: relative;
+        margin-top: 4rem;
+        color: #d7e6dc;
+        background: linear-gradient(160deg, #0d3b1f 0%, #082a15 60%, #061d0f 100%);
+        overflow: hidden;
+    }
+
+        .bc-footer::before {
+            content: "";
+            position: absolute;
+            right: -120px;
+            top: -120px;
+            width: 340px;
+            height: 340px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.04);
+        }
+
+        .bc-footer::after {
+            content: "";
+            position: absolute;
+            left: -80px;
+            bottom: -100px;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: var(--gy, #adff2f);
+            opacity: .06;
+        }
+
+        .bc-footer .container {
+            position: relative;
+            z-index: 1;
+        }
+
+    .bc-footer-top {
+        padding: 3.2rem 0 2rem;
+    }
+
+    .bc-logo-badge {
+        display: inline-block;
+        background: #fff;
+        border-radius: 16px;
+        padding: .55rem .9rem;
+        margin-bottom: 1.1rem;
+        box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    }
+
+        .bc-logo-badge img {
+            display: block;
+            width: 150px;
+            height: auto;
+        }
+
+    .bc-footer p.bc-about {
+        opacity: .8;
+        line-height: 1.7;
+        max-width: 340px;
+    }
+
+    .bc-footer h6 {
+        position: relative;
+        color: #fff;
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+        padding-bottom: .6rem;
+    }
+
+        .bc-footer h6::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 32px;
+            height: 3px;
+            border-radius: 3px;
+            background: var(--gy, #adff2f);
+        }
+
+    .bc-links {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+        .bc-links li {
+            margin-bottom: .65rem;
+        }
+
+        .bc-links a {
+            color: #d7e6dc;
+            opacity: .8;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            transition: .2s;
+        }
+
+            .bc-links a i {
+                font-size: .7rem;
+                color: var(--gy, #adff2f);
+                transition: .2s;
+            }
+
+            .bc-links a:hover {
+                opacity: 1;
+                color: #fff;
+                transform: translateX(4px);
+            }
+
+    .bc-contact {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+        .bc-contact li {
+            display: flex;
+            gap: .8rem;
+            align-items: flex-start;
+            margin-bottom: .9rem;
+            opacity: .85;
+        }
+
+        .bc-contact .ico {
+            width: 34px;
+            height: 34px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,.1);
+            color: var(--gy, #adff2f);
+        }
+
+        .bc-contact a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+            .bc-contact a:hover {
+                color: #fff;
+                text-decoration: underline;
+            }
+
+    .bc-social {
+        display: flex;
+        gap: .6rem;
+        margin-top: 1.3rem;
+    }
+
+        .bc-social a {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,.1);
+            color: #fff;
+            text-decoration: none;
+            transition: .2s;
+        }
+
+            .bc-social a:hover {
+                background: var(--gy, #adff2f);
+                color: #0d3b1f;
+                transform: translateY(-3px);
+            }
+
+    .bc-footer-bottom {
+        border-top: 1px solid rgba(255,255,255,.12);
+        padding: 1.1rem 0;
+        font-size: .88rem;
+    }
+
+        .bc-footer-bottom .muted {
+            opacity: .75;
+        }
+</style>
+
+<footer class="bc-footer">
     <div class="container">
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <h5 class="fw-bold mb-3" style="color: var(--bg);">
-                    <i class="bi bi-book-half me-1" style="color: var(--g);"></i> BookNest
-                </h5>
-                <p class="mb-0" style="opacity: .75;">@L["Your cozy corner for great books. Discover, read, and share stories that matter."]</p>
+        <div class="row bc-footer-top g-4">
+
+            <!-- Brand -->
+            <div class="col-lg-4 col-md-6">
+                <a asp-controller="Home" asp-action="Index" class="bc-logo-badge" aria-label="Book Cambodia">
+                    <img src="~/images/logo/Book_Cambodia_Logo_4K.png" alt="Book Cambodia" />
+                </a>
+                <p class="bc-about mb-0">@L["Your cozy corner for great books. Discover, read, and share stories that matter."]</p>
+                <div class="bc-social">
+                    <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="#" aria-label="Telegram"><i class="bi bi-telegram"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="#" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>
+                </div>
             </div>
-            <div class="col-md-4 mb-3">
-                <h6 class="fw-bold mb-3" style="color: var(--bg);">@L["Shop"]</h6>
-                <ul class="list-unstyled">
-                    <li class="mb-2"><a asp-controller="Home" asp-action="Index" class="text-decoration-none" style="color: var(--bg); opacity: .75;">@L["Home"]</a></li>
-                    <li class="mb-2"><a asp-controller="Books" asp-action="Index" class="text-decoration-none" style="color: var(--bg); opacity: .75;">@L["Books"]</a></li>
-                    <li class="mb-2"><a asp-controller="Contact" asp-action="Index" class="text-decoration-none" style="color: var(--bg); opacity: .75;">@L["Contact"]</a></li>
+
+            <!-- Shop -->
+            <div class="col-lg-2 col-md-3 col-6">
+                <h6>@L["Shop"]</h6>
+                <ul class="bc-links">
+                    <li><a asp-controller="Home" asp-action="Index"><i class="bi bi-chevron-right"></i>@L["Home"]</a></li>
+                    <li><a asp-controller="Books" asp-action="Index"><i class="bi bi-chevron-right"></i>@L["Books"]</a></li>
+                    <li><a asp-controller="About" asp-action="Index"><i class="bi bi-chevron-right"></i>@L["About us"]</a></li>
+                    <li><a asp-controller="Contact" asp-action="Index"><i class="bi bi-chevron-right"></i>@L["Contact"]</a></li>
                 </ul>
             </div>
-            <div class="col-md-4 mb-3">
-                <h6 class="fw-bold mb-3" style="color: var(--bg);">@L["Contact"]</h6>
-                <p class="mb-2" style="opacity: .75;"><i class="bi bi-geo-alt me-2"></i> Phnom Penh, Cambodia</p>
-                <p class="mb-0 small" style="opacity: .75;">&copy; @DateTime.Now.Year BookNest. @L["All rights reserved."]</p>
+
+            <!-- Account -->
+            <div class="col-lg-2 col-md-3 col-6">
+                <h6>@L["Account"]</h6>
+                <ul class="bc-links">
+                    <li><a asp-controller="Account" asp-action="Login"><i class="bi bi-chevron-right"></i>@L["Login"]</a></li>
+                    <li><a asp-controller="Account" asp-action="Register"><i class="bi bi-chevron-right"></i>@L["Register"]</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact -->
+            <div class="col-lg-4 col-md-6">
+                <h6>@L["Contact"]</h6>
+                <ul class="bc-contact">
+                    <li>
+                        <span class="ico"><i class="bi bi-geo-alt"></i></span>
+                        <span>Phnom Penh, Cambodia</span>
+                    </li>
+                    <li>
+                        <span class="ico"><i class="bi bi-envelope"></i></span>
+                        <a href="mailto:admin@bookstore.com">admin@bookstore.com</a>
+                    </li>
+                    <li>
+                        <span class="ico"><i class="bi bi-clock"></i></span>
+                        <span>@L["Mon - Fri, 9:00 AM - 6:00 PM"]</span>
+                    </li>
+                </ul>
             </div>
         </div>
-        <hr style="border-color: var(--bg); opacity: .2;" />
-        <div class="text-center small" style="opacity: .75;">
-            @L["Crafted with"] <i class="bi bi-heart-fill text-danger"></i> @L["for book lovers"]
+
+        <div class="bc-footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <span class="muted">&copy; @DateTime.Now.Year Book Cambodia. @L["All rights reserved."]</span>
+            <span class="muted">@L["Crafted with"] <i class="bi bi-heart-fill text-danger"></i> @L["for book lovers"]</span>
         </div>
     </div>
 </footer>

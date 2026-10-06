@@ -134,7 +134,10 @@
         var freeShip = subtotalC >= thresholdC;
         var shipEl = document.getElementById('coShipping');
         var totalEl = document.getElementById('coTotal');
-        var freeText = '@L["Free"]';
+        const T = {
+            free: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(L["Free"].Value)),
+            placing: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(L["Placing order..."].Value))
+        };
 
         function fmt(c) { return '$' + (c / 100).toFixed(2); }
 
@@ -142,7 +145,7 @@
             var sel = document.querySelector('input[name="ShippingMethodId"]:checked');
             var priceC = sel ? (parseInt(sel.getAttribute('data-price-cents'), 10) || 0) : 0;
             var feeC = freeShip ? 0 : priceC;
-            shipEl.textContent = feeC === 0 ? freeText : fmt(feeC);
+            shipEl.textContent = feeC === 0 ? T.free : fmt(feeC);
             totalEl.textContent = fmt(subtotalC + feeC);
         }
         document.querySelectorAll('input[name="ShippingMethodId"]').forEach(function (r) {
@@ -155,7 +158,8 @@
         var btn = document.getElementById('coSubmit');
         form.addEventListener('submit', function () {
             btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>@L["Placing order..."]';
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>';
+            btn.appendChild(document.createTextNode(T.placing));
         });
     })();
 </script>

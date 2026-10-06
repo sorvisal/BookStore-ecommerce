@@ -1,0 +1,13 @@
+@model E_Commerce.ViewModels.AvatarViewModel
+@{
+    var cls = string.IsNullOrWhiteSpace(Model.CssClass) ? "avatar" : "avatar " + Model.CssClass;
+}
+@* Round avatar: the photo covers the initials circle; if it fails to load it
+   removes itself and the initials (green gradient) show through. *@
+<span class="@cls">
+    @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+    {
+        <img class="avatar-img" src="@Model.ImageUrl" alt="" onerror="this.remove()" />
+    }
+    <span class="avatar-initials" aria-hidden="true">@Model.Initials</span>
+</span>
