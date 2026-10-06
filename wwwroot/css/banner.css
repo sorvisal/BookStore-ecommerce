@@ -1,0 +1,289 @@
+/* Book Cambodia coverflow hero banner (uses the site.css variables) */
+
+.cf {
+    padding: .8rem 0 1.2rem;
+}
+
+.cf-stage {
+    position: relative;
+    max-width: 1500px;
+    height: 440px;
+    margin: 0 auto;
+    overflow: hidden;
+    padding: 0;
+}
+
+/* ---- Slides ---- */
+.cf-slide {
+    --grad: linear-gradient(120deg, #1b5e20, #2e7d32 55%, #adff2f);
+    position: absolute;
+    top: 0;
+    left: 20%;
+    width: 60%;
+    height: 100%;
+    border-radius: 26px;
+    overflow: hidden;
+    box-shadow: none; /* no shadow under the banner */
+    color: #fff;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    transform: scale(.7);
+    pointer-events: none;
+    transition: opacity .6s cubic-bezier(.4, 0, .2, 1), transform .6s cubic-bezier(.4, 0, .2, 1);
+    background: var(--img, none) center/cover no-repeat, var(--grad);
+}
+
+    .cf-slide.is-active {
+        opacity: 1;
+        transform: none;
+        z-index: 3;
+        pointer-events: auto;
+    }
+
+    .cf-slide.is-prev {
+        opacity: 1;
+        transform: translateX(-78%) scale(.84);
+        z-index: 2;
+        cursor: pointer;
+        pointer-events: auto;
+    }
+
+    .cf-slide.is-next {
+        opacity: 1;
+        transform: translateX(78%) scale(.84);
+        z-index: 2;
+        cursor: pointer;
+        pointer-events: auto;
+    }
+
+        .cf-slide.is-prev::after,
+        .cf-slide.is-next::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: var(--cf-overlay);
+        }
+
+/* ---- Slide content ---- */
+.cf-art {
+    position: absolute;
+    right: 6%;
+    top: 50%;
+    margin-top: -6rem;
+    font-size: 12rem;
+    color: var(--gy);
+    opacity: .25;
+    animation: cf-float 5s ease-in-out infinite;
+}
+
+.cf-body {
+    position: relative;
+    z-index: 2;
+    max-width: 560px;
+    padding: 0 3.5rem;
+}
+
+    .cf-body > * {
+        opacity: 0;
+    }
+
+.cf-slide.is-active .cf-body > * {
+    animation: cf-rise .7s both;
+}
+
+    .cf-slide.is-active .cf-body > *:nth-child(2) {
+        animation-delay: .12s;
+    }
+
+    .cf-slide.is-active .cf-body > *:nth-child(3) {
+        animation-delay: .24s;
+    }
+
+    .cf-slide.is-active .cf-body > *:nth-child(4) {
+        animation-delay: .36s;
+    }
+
+.cf-label {
+    display: inline-block;
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    margin-bottom: .6rem;
+    color: var(--gy);
+}
+
+.cf-body h2 {
+    font-family: 'Plus Jakarta Sans', 'MiSans Khmer', system-ui, sans-serif;
+    font-size: 3.2rem;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    line-height: 1.2;
+    color: #fff;
+    margin-bottom: .9rem;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, .25);
+}
+
+.cf-body p {
+    font-size: 1.05rem;
+    opacity: .95;
+    margin-bottom: 1.4rem;
+}
+
+/* Photo slides that already contain text: only the CTA button, bottom-left */
+.cf-body-cta {
+    position: absolute;
+    left: 3.5rem;
+    bottom: 2.2rem;
+    max-width: none;
+    padding: 0;
+}
+
+/* Buttons inside the banner use the brand green */
+.cf .btn,
+.cf .btn-accent {
+    background: var(--g);
+    border: 0;
+    color: var(--on-g);
+    font-weight: 600;
+    border-radius: 50px;
+    padding: .6rem 1.6rem;
+    box-shadow: 0 8px 18px rgba(18, 146, 58, .35);
+    transition: .2s;
+}
+
+    .cf .btn:hover,
+    .cf .btn-accent:hover {
+        background: var(--gy);
+        color: var(--g-d);
+        transform: translateY(-2px);
+    }
+
+/* ---- Navigation (arrows + dots) ---- */
+.cf-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.4rem;
+}
+
+.cf-arrow {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--g-d);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: .25s;
+}
+
+    .cf-arrow:hover {
+        background: var(--bg-soft);
+        border-color: var(--border); /* stays neutral, no green border */
+        color: var(--g);
+    }
+
+.cf-dots {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.cf-dot {
+    width: 10px;
+    height: 10px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: var(--border);
+    cursor: pointer;
+    transition: width .3s, background .3s;
+}
+
+    .cf-dot:hover {
+        background: var(--g);
+    }
+
+    .cf-dot.on {
+        width: 28px;
+        background: var(--g); /* solid brand green, no outline ring */
+        box-shadow: none;
+    }
+
+    /* No green ring after clicking an arrow or dot */
+    .cf-arrow:focus,
+    .cf-dot:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    /* Keyboard users still get a visible focus, in neutral grey */
+    .cf-arrow:focus-visible,
+    .cf-dot:focus-visible {
+        outline: 2px solid var(--muted);
+        outline-offset: 2px;
+    }
+
+/* ---- Animations ---- */
+@keyframes cf-rise {
+    from {
+        opacity: 0;
+        transform: translateY(26px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes cf-float {
+    50% {
+        transform: translateY(-16px) rotate(4deg);
+    }
+}
+
+/* ---- Mobile ---- */
+@media (max-width: 768px) {
+    .cf-stage {
+        height: 300px;
+    }
+
+    .cf-slide {
+        left: 8%;
+        width: 84%;
+        border-radius: 18px;
+    }
+
+        .cf-slide.is-prev {
+            transform: translateX(-92%) scale(.86);
+        }
+
+        .cf-slide.is-next {
+            transform: translateX(92%) scale(.86);
+        }
+
+    .cf-body {
+        padding: 0 1.6rem;
+    }
+
+    .cf-body-cta {
+        left: 1.6rem;
+        bottom: 1.4rem;
+        padding: 0;
+    }
+
+    .cf-body h2 {
+        font-size: 1.8rem;
+    }
+
+    .cf-art {
+        display: none;
+    }
+}

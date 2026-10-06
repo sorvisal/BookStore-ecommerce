@@ -8,25 +8,28 @@ namespace E_Commerce.Models
         [Key]
         public int OrderDetailId { get; set; }
 
-        public int? OrderId { get; set; }
+        [Required]
+        public int OrderId { get; set; }
 
-        public int? BookId { get; set; }
+        [Required]
+        public int BookId { get; set; }
 
-        public int? Quantity { get; set; }
+        [Required, Range(1, int.MaxValue)]
+        public int Quantity { get; set; }
 
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal? UnitPrice { get; set; }
+        [Required, Column(TypeName = "decimal(18,2)"), Range(0.01, double.MaxValue)]
+        public decimal UnitPrice { get; set; }
 
-        [Column(TypeName = "decimal(18,2)")]
+        [Column(TypeName = "decimal(18,2)"), Range(0, double.MaxValue)]
         public decimal? Discount { get; set; }
 
-        [Column(TypeName = "decimal(18,2)")]
+        [Column(TypeName = "decimal(18,2)"), Range(0, double.MaxValue)]
         public decimal? Subtotal { get; set; }
 
         [ForeignKey(nameof(OrderId))]
-        public Order Order { get; set; }
+        public Order? Order { get; set; }
 
         [ForeignKey(nameof(BookId))]
-        public Book Book { get; set; }
+        public Book? Book { get; set; }
     }
 }

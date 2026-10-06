@@ -15,9 +15,9 @@ namespace E_Commerce.Models
         public int AuthorId { get; set; }
 
         [ForeignKey(nameof(BookId))]
-        public Book Book { get; set; }
+        public Book? Book { get; set; }
 
         [ForeignKey(nameof(AuthorId))]
-        public Author Author { get; set; }
+        public Author? Author { get; set; }
     }
 }

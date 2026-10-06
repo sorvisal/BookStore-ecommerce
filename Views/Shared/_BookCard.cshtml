@@ -1,0 +1,46 @@
+﻿@using Microsoft.Extensions.Localization
+@using E_Commerce
+@inject IStringLocalizer<SharedResource> L
+@model E_Commerce.Models.Book
+
+<div class="card h-100 shadow-sm border-0">
+    <a asp-controller="Books" asp-action="Details" asp-route-id="@Model.BookId" class="text-decoration-none">
+        <div class="text-center p-3 bg-light">
+            @{
+                var img = !string.IsNullOrWhiteSpace(Model.ImageUrl) ? Model.ImageUrl : (!string.IsNullOrWhiteSpace(Model.CoverImage) ? Model.CoverImage : "/images/placeholder.svg");
+            }
+            <img src="@img" class="img-fluid" alt="@Model.Title" style="height: 200px; object-fit: cover;" onerror="this.src='/images/placeholder.svg'">
+        </div>
+    </a>
+    <div class="card-body d-flex flex-column">
+        <h6 class="card-title mb-1">@Model.Title</h6>
+        @if (Model.Category != null)
+        {
+            <small class="text-muted">@Model.Category.CategoryName</small>
+        }
+        <div class="mt-auto">
+            @if (Model.DiscountPrice.HasValue)
+            {
+                <div>
+                    <span class="fw-bold text-primary">$@Model.DiscountPrice.Value.ToString("0.00")</span>
+                    <span class="text-muted text-decoration-line-through small">$@Model.Price.ToString("0.00")</span>
+                </div>
+            }
+            else
+            {
+                <span class="fw-bold text-primary">$@Model.Price.ToString("0.00")</span>
+            }
+            @if (Model.StockQuantity <= 0)
+            {
+                <div class="text-danger small">@L["Out of stock"]</div>
+            }
+            else
+            {
+                <form asp-controller="Cart" asp-action="Add" method="post" class="mt-2">
+                    <input type="hidden" name="bookId" value="@Model.BookId" />
+                    <button type="submit" class="btn btn-accent btn-sm w-100"><i class="bi bi-cart-plus"></i> @L["Add to cart"]</button>
+                </form>
+            }
+        </div>
+    </div>
+</div>

@@ -12,29 +12,29 @@ namespace E_Commerce.Models
 
         public int? PaymentMethodId { get; set; }
 
-        [Column(TypeName = "decimal(18,2)")]
+        [Column(TypeName = "decimal(18,2)"), Range(0, double.MaxValue)]
         public decimal? Amount { get; set; }
 
-        [MaxLength(100)]
-        public string TransactionReference { get; set; }
+        [StringLength(100)]
+        public string? TransactionReference { get; set; }
 
-        [MaxLength(255)]
-        public string QRCode { get; set; }
+        [StringLength(255)]
+        public string? QRCode { get; set; }
 
         public DateTime? PaidDate { get; set; }
 
-        [MaxLength(30)]
-        public string Status { get; set; }
+        [StringLength(30)]
+        public string Status { get; set; } = "Pending";
 
         public int? VerifiedBy { get; set; }
 
-        [MaxLength(255)]
-        public string Remark { get; set; }
+        [StringLength(255)]
+        public string? Remark { get; set; }
 
         [ForeignKey(nameof(OrderId))]
-        public Order Order { get; set; }
+        public Order? Order { get; set; }
 
         [ForeignKey(nameof(PaymentMethodId))]
-        public PaymentMethod PaymentMethod { get; set; }
+        public PaymentMethod? PaymentMethod { get; set; }
     }
 }

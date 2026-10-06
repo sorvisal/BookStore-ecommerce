@@ -1,0 +1,122 @@
+@model Order
+@{
+    ViewData["Title"] = "Order " + Model.OrderNumber;
+    var flow = new[] { "Pending", "Processing", "Shipped", "Delivered" };
+    var icons = new[] { "bi-receipt", "bi-box-seam", "bi-truck", "bi-house-check" };
+    var idx = Array.IndexOf(flow, Model.Status);
+    var nextStatuses = (string[])ViewData["NextStatuses"]!;
+}
+
+<a asp-action="Index" class="small no-print"><i class="bi bi-arrow-left"></i> Back to orders</a>
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 my-3">
+    <h4 class="mb-0">Order @Model.OrderNumber</h4>
+    <span class="st st-@Model.Status">@Model.Status</span>
+</div>
+
+@if (Model.Status == "Cancelled")
+{
+    <div class="alert alert-danger"><i class="bi bi-x-circle"></i> This order was cancelled.</div>
+}
+else
+{
+    <div class="adm-panel"><div class="steps">
+        @for (var i = 0; i < flow.Length; i++)
+        {
+            <div class="step @(i <= idx ? "done" : "")"><i class="bi @icons[i]"></i>@flow[i]</div>
+        }
+    </div></div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="adm-panel table-responsive">
+            <h5>Items</h5>
+            <table class="table adm-table align-middle">
+                <thead>
+                    <tr><th></th><th>Title</th><th>Unit price</th><th>Qty</th><th class="text-end">Subtotal</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var d in Model.OrderDetails)
+                    {
+                        <tr>
+                            <td>
+                                <img class="adm-thumb" alt=""
+                                     src="@(string.IsNullOrEmpty(d.Book?.ImageUrl) ? "/images/placeholder.svg" : d.Book.ImageUrl)"
+                                     onerror="this.src='/images/placeholder.svg'" />
+                            </td>
+                            <td>
+                                <a class="fw-semibold" asp-area="" asp-controller="Books" asp-action="Details" asp-route-id="@d.BookId">@d.Book?.Title</a>
+                            </td>
+                            <td>$@d.UnitPrice.ToString("N2")</td>
+                            <td>@d.Quantity</td>
+                            <td class="text-end fw-bold">$@d.Subtotal.GetValueOrDefault().ToString("N2")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="adm-panel">
+            <h5>Customer</h5>
+            @if (Model.User != null)
+            {
+                <p class="mb-1"><i class="bi bi-person"></i> @Model.User.FirstName @Model.User.LastName</p>
+                <p class="mb-1"><i class="bi bi-envelope"></i> @Model.User.Email</p>
+                <p class="mb-0"><i class="bi bi-telephone"></i> @(Model.User.Phone ?? "-")</p>
+            }
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="adm-panel">
+            <h5>Summary</h5>
+            <div class="d-flex justify-content-between"><span>Subtotal</span><span>$@Model.Subtotal.GetValueOrDefault().ToString("N2")</span></div>
+            <div class="d-flex justify-content-between"><span>Discount</span><span>-$@Model.Discount.GetValueOrDefault().ToString("N2")</span></div>
+            <div class="d-flex justify-content-between"><span>Shipping</span><span>$@Model.ShippingFee.GetValueOrDefault().ToString("N2")</span></div>
+            <div class="d-flex justify-content-between"><span>Tax</span><span>$@Model.Tax.GetValueOrDefault().ToString("N2")</span></div>
+            <hr />
+            <div class="d-flex justify-content-between fs-5 fw-bold"><span>Total</span><span style="color:var(--g-d,#1b5e20)">$@Model.GrandTotal.GetValueOrDefault().ToString("N2")</span></div>
+        </div>
+
+        <div class="adm-panel">
+            <h5>Delivery &amp; payment</h5>
+            <p class="mb-1"><i class="bi bi-person"></i> @Model.ReceiverName &middot; @Model.Phone</p>
+            <p class="mb-1"><i class="bi bi-geo-alt"></i> @Model.ShippingAddress</p>
+            @if (!string.IsNullOrWhiteSpace(Model.Notes))
+            {
+                <p class="mb-1"><i class="bi bi-sticky"></i> @Model.Notes</p>
+            }
+            <p class="mb-1"><i class="bi bi-truck"></i> @Model.ShippingMethod?.MethodName</p>
+            <p class="mb-0">
+                <i class="bi bi-credit-card"></i> @Model.Payment?.PaymentMethod?.MethodName
+                <span class="pay-badge @(Model.Payment?.Status == "Paid" ? "paid" : "unpaid")">@Model.Payment?.Status</span>
+                @if (Model.Payment?.PaidDate != null)
+                {
+                    <small class="text-muted">on @Model.Payment.PaidDate.Value.ToString("dd MMM yyyy")</small>
+                }
+            </p>
+        </div>
+
+        <div class="adm-panel no-print">
+            <h5>Update status</h5>
+            @if (nextStatuses.Length > 0)
+            {
+                <form asp-action="UpdateStatus" method="post" class="d-flex gap-2">
+                    <input type="hidden" name="id" value="@Model.OrderId" />
+                    <select name="status" class="form-select">
+                        @foreach (var s in nextStatuses)
+                        {
+                            <option value="@s">@s</option>
+                        }
+                    </select>
+                    <button type="submit" class="btn-adm text-nowrap">Update status</button>
+                </form>
+            }
+            else
+            {
+                <p class="text-muted mb-0">This order is @Model.Status.ToLower() and cannot be changed.</p>
+            }
+            <button type="button" class="btn btn-outline-dark w-100 mt-3" onclick="window.print()"><i class="bi bi-printer"></i> Print invoice</button>
+        </div>
+    </div>
+</div>

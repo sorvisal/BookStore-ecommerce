@@ -1,0 +1,52 @@
+@model Publisher
+@{
+    var isEdit = Model.PublisherId > 0;
+    ViewData["Title"] = isEdit ? "Edit publisher" : "New publisher";
+}
+
+<div class="adm-panel" style="max-width: 640px;">
+    <form asp-action="@(isEdit ? "Edit" : "Create")" method="post">
+        @if (isEdit)
+        {
+            <input type="hidden" asp-for="PublisherId" />
+        }
+        <div class="mb-3">
+            <label asp-for="PublisherName" class="form-label">Name</label>
+            <input asp-for="PublisherName" class="form-control" />
+            <span asp-validation-for="PublisherName" class="text-danger small"></span>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label asp-for="Phone" class="form-label">Phone</label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" type="email" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Website" class="form-label">Website</label>
+            <input asp-for="Website" class="form-control" />
+            <span asp-validation-for="Website" class="text-danger small"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Address" class="form-label">Address</label>
+            <input asp-for="Address" class="form-control" />
+            <span asp-validation-for="Address" class="text-danger small"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">Description</label>
+            <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+            <span asp-validation-for="Description" class="text-danger small"></span>
+        </div>
+        <button type="submit" class="btn-adm"><i class="bi bi-check-lg"></i> Save</button>
+        <a class="btn btn-outline-secondary ms-2" asp-action="Index">Cancel</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="~/Views/Shared/_ValidationScriptsPartial.cshtml" />
+}

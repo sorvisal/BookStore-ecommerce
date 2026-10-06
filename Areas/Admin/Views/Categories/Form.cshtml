@@ -1,0 +1,39 @@
+@model Category
+@{
+    var isEdit = Model.CategoryId > 0;
+    ViewData["Title"] = isEdit ? "Edit category" : "New category";
+}
+
+<div class="adm-panel" style="max-width: 640px;">
+    <form asp-action="@(isEdit ? "Edit" : "Create")" method="post">
+        @if (isEdit)
+        {
+            <input type="hidden" asp-for="CategoryId" />
+        }
+        <div class="mb-3">
+            <label asp-for="CategoryName" class="form-label">Name</label>
+            <input asp-for="CategoryName" class="form-control" />
+            <span asp-validation-for="CategoryName" class="text-danger small"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">Description</label>
+            <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+            <span asp-validation-for="Description" class="text-danger small"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Image" class="form-label">Image URL</label>
+            <input asp-for="Image" class="form-control" placeholder="/images/categories/..." />
+            <span asp-validation-for="Image" class="text-danger small"></span>
+        </div>
+        <div class="form-check mb-3">
+            <input asp-for="Status" class="form-check-input" />
+            <label asp-for="Status" class="form-check-label">Active</label>
+        </div>
+        <button type="submit" class="btn-adm"><i class="bi bi-check-lg"></i> Save</button>
+        <a class="btn btn-outline-secondary ms-2" asp-action="Index">Cancel</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="~/Views/Shared/_ValidationScriptsPartial.cshtml" />
+}

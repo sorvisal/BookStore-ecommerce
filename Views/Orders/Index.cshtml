@@ -1,0 +1,58 @@
+﻿@using Microsoft.Extensions.Localization
+@using E_Commerce
+@inject IStringLocalizer<SharedResource> L
+@using E_Commerce.ViewModels
+@model OrderListViewModel
+@{
+    ViewData["Title"] = "My orders";
+    var statuses = new[] { "", "Pending", "Processing", "Shipped", "Delivered", "Cancelled" };
+}
+<link rel="stylesheet" href="~/css/orders.css" asp-append-version="true" />
+<div class="container py-4">
+    <h2 class="mb-3">@L["My orders"]</h2>
+    <div class="mb-3">
+        @foreach (var s in statuses)
+        {
+            <a class="chip-o @((Model.Status ?? "") == s ? "on" : "")" asp-action="Index" asp-route-status="@s">@(s == "" ? L["All"].Value : L[s].Value)</a>
+        }
+    </div>
+
+    @if (!Model.Orders.Any())
+    {
+        <div class="panel-o text-center py-5">
+            <i class="bi bi-receipt fs-1 text-muted"></i>
+            <p class="mt-2">@L["You have no orders yet."]</p>
+            <a class="btn btn-accent" asp-controller="Books" asp-action="Index">@L["Start shopping"]</a>
+        </div>
+    }
+
+    @foreach (var o in Model.Orders)
+    {
+        <a class="order-card" asp-action="Details" asp-route-id="@o.OrderId">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <div class="fw-bold">@o.OrderNumber</div>
+                    <small class="text-muted">@o.OrderDate.ToString("dd MMM yyyy, HH:mm") &middot; @o.OrderDetails.Sum(d => d.Quantity) @L["Items"]</small>
+                    <div class="mt-2 d-flex">
+                        @foreach (var d in o.OrderDetails.Take(3))
+                        {
+                            <img class="thumb" src="@(string.IsNullOrEmpty(d.Book?.ImageUrl) ? "/images/placeholder.svg" : d.Book.ImageUrl)" alt="" onerror="this.src='/images/placeholder.svg'" />
+                        }
+                    </div>
+                </div>
+                <span class="st st-@o.Status">@L[o.Status]</span>
+                <div class="fw-bold fs-5 text-end">$@o.GrandTotal.GetValueOrDefault().ToString("N2")</div>
+            </div>
+        </a>
+    }
+
+    @if (Model.TotalPages > 1)
+    {
+        <nav class="mt-4"><ul class="pagination justify-content-center">
+            @for (var p = 1; p <= Model.TotalPages; p++)
+            {
+                <li class="page-item @(p == Model.Page ? "active" : "")"><a class="page-link" asp-action="Index" asp-route-page="@p" asp-route-status="@Model.Status">@p</a></li>
+            }
+        </ul></nav>
+    }
+</div>

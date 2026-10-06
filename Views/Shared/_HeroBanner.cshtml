@@ -1,0 +1,132 @@
+﻿@using Microsoft.Extensions.Localization
+@using E_Commerce
+@inject IStringLocalizer<SharedResource> L
+@* BookNest coverflow hero banner - plain CSS + vanilla JS (no Bootstrap carousel) *@
+<link rel="stylesheet" href="~/css/banner.css" asp-append-version="true" />
+
+<!--
+    Photo banners: slides 1-4 use photos from wwwroot/images/banners (2816x1504 px; 1600x600 recommended).
+    Any slide can define --img to show a photo behind its content, with --grad as fallback:
+    <div class="cf-slide" style="--img:url('/images/banners/b1.jpg');--grad:#1b2236">
+    These photos already contain their own text, so their slides keep only the CTA button (bottom-left).
+-->
+<section class="cf" id="cf" aria-label="Featured highlights">
+    <div class="cf-stage">
+        <div class="cf-slide" style="--img:url('/images/banners/banner1.jpg');--grad:#adff2f">
+            <div class="cf-body cf-body-cta">
+                <a asp-controller="Books" asp-action="Index" class="btn btn-accent">@L["Browse Books"]</a>
+            </div>
+        </div>
+
+        <div class="cf-slide" style="--img:url('/images/banners/banner2.jpg');--grad:#adff2f">
+            <div class="cf-body cf-body-cta">
+                <a asp-controller="Books" asp-action="Index" asp-route-sortBy="newest" class="btn btn-accent">@L["Shop New Arrivals"]</a>
+            </div>
+        </div>
+
+        <div class="cf-slide" style="--img:url('/images/banners/banner3.jpg');--grad:#1b2236">
+            <div class="cf-body cf-body-cta">
+                <a asp-controller="Books" asp-action="Index" asp-route-sortBy="priceAsc" class="btn btn-accent">@L["See Deals"]</a>
+            </div>
+        </div>
+
+        <div class="cf-slide" style="--img:url('/images/banners/banner4.jpg');--grad:#1b2236">
+            <div class="cf-body cf-body-cta">
+                <a asp-controller="Books" asp-action="Index" class="btn btn-accent">@L["Explore the Catalog"]</a>
+            </div>
+        </div>
+
+        <div class="cf-slide" style="--img:url('/images/banners/banner5.jpg');--grad:#1b2236">
+            <div class="cf-body cf-body-cta">
+                <a asp-controller="Books" asp-action="Index" class="btn btn-accent">@L["Explore the Catalog"]</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="cf-nav">
+        <button type="button" class="cf-arrow cf-prev" aria-label="Previous slide">
+            <i class="bi bi-chevron-left" aria-hidden="true"></i>
+        </button>
+        <div class="cf-dots"></div>
+        <button type="button" class="cf-arrow cf-next" aria-label="Next slide">
+            <i class="bi bi-chevron-right" aria-hidden="true"></i>
+        </button>
+    </div>
+</section>
+
+<script>
+    (function () {
+        var cf = document.getElementById('cf');
+        if (!cf) return;
+
+        var slides = Array.prototype.slice.call(cf.querySelectorAll('.cf-slide'));
+        var dotsWrap = cf.querySelector('.cf-dots');
+        var prevBtn = cf.querySelector('.cf-prev');
+        var nextBtn = cf.querySelector('.cf-next');
+        var n = slides.length;
+        var current = 0;
+        var timer = null;
+
+        // One dot per slide
+        var dots = slides.map(function (_, i) {
+            var d = document.createElement('button');
+            d.type = 'button';
+            d.className = 'cf-dot';
+            d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+            d.addEventListener('click', function () { goTo(i); restart(); });
+            dotsWrap.appendChild(d);
+            return d;
+        });
+
+        function render() {
+            slides.forEach(function (s, i) {
+                s.classList.remove('is-active', 'is-prev', 'is-next');
+                if (i === current) s.classList.add('is-active');
+                else if (i === (current - 1 + n) % n) s.classList.add('is-prev');
+                else if (i === (current + 1) % n) s.classList.add('is-next');
+            });
+            dots.forEach(function (d, i) { d.classList.toggle('on', i === current); });
+        }
+
+        function goTo(i) { current = (i + n) % n; render(); }
+        function next() { goTo(current + 1); }
+        function prev() { goTo(current - 1); }
+
+        function start() { stop(); timer = setInterval(next, 5000); }
+        function stop() { if (timer) { clearInterval(timer); timer = null; } }
+        function restart() { start(); }
+
+        prevBtn.addEventListener('click', function () { prev(); restart(); });
+        nextBtn.addEventListener('click', function () { next(); restart(); });
+
+        // Clicking a side slide moves the carousel
+        slides.forEach(function (s) {
+            s.addEventListener('click', function () {
+                if (s.classList.contains('is-prev')) { prev(); restart(); }
+                else if (s.classList.contains('is-next')) { next(); restart(); }
+            });
+        });
+
+        // Pause auto-play on hover, resume on leave
+        cf.addEventListener('mouseenter', stop);
+        cf.addEventListener('mouseleave', start);
+
+        // Touch swipe (horizontal movement over 40px)
+        var startX = null;
+        cf.addEventListener('touchstart', function (e) {
+            startX = e.touches[0].clientX;
+        }, { passive: true });
+        cf.addEventListener('touchend', function (e) {
+            if (startX === null) return;
+            var dx = e.changedTouches[0].clientX - startX;
+            if (Math.abs(dx) > 40) {
+                if (dx < 0) next(); else prev();
+                restart();
+            }
+            startX = null;
+        }, { passive: true });
+
+        render();
+        start();
+    })();
+</script>

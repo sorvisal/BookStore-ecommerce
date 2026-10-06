@@ -1,0 +1,48 @@
+@model List<Publisher>
+@{
+    ViewData["Title"] = "Publishers";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <span class="text-muted">@Model.Count publishers</span>
+    <a class="btn-adm" asp-action="Create"><i class="bi bi-plus-lg"></i> New publisher</a>
+</div>
+
+<div class="adm-panel table-responsive">
+    <table class="table adm-table align-middle">
+        <thead>
+            <tr><th>Name</th><th>Phone</th><th>Email</th><th>Website</th><th></th></tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr><td colspan="5" class="text-center text-muted py-4">No publishers yet.</td></tr>
+            }
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td class="fw-semibold">@p.PublisherName</td>
+                    <td>@(p.Phone ?? "-")</td>
+                    <td>@(p.Email ?? "-")</td>
+                    <td>
+                        @if (!string.IsNullOrWhiteSpace(p.Website))
+                        {
+                            <a href="@p.Website" target="_blank" rel="noopener">@p.Website</a>
+                        }
+                        else
+                        {
+                            @:-
+                        }
+                    </td>
+                    <td class="text-nowrap text-end">
+                        <a class="btn btn-sm btn-outline-success" asp-action="Edit" asp-route-id="@p.PublisherId"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="Delete" asp-route-id="@p.PublisherId" method="post" class="d-inline"
+                              onsubmit="return confirm('Delete this publisher?')">
+                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash3"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

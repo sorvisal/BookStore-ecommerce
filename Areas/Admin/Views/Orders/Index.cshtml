@@ -1,0 +1,109 @@
+@model List<Order>
+@{
+    ViewData["Title"] = "Orders";
+    var statuses = (string[])ViewData["Statuses"]!;
+    var counts = (Dictionary<string, int>)ViewData["Counts"]!;
+    var cur = (string?)ViewData["Status"];
+    var search = (string?)ViewData["Search"];
+    var from = (string?)ViewData["From"];
+    var to = (string?)ViewData["To"];
+    var page = (int)ViewData["Page"]!;
+    var totalPages = (int)ViewData["TotalPages"]!;
+    var filteredCount = (int)ViewData["FilteredCount"]!;
+    var filteredIncome = (decimal)ViewData["FilteredIncome"]!;
+    int CountFor(string s) => counts.TryGetValue(s, out var c) ? c : 0;
+    var allCount = counts.Values.Sum();
+}
+
+<div class="d-flex flex-wrap gap-1 mb-3">
+    <a class="chip-o @(cur == null ? "on" : "")"
+       asp-action="Index" asp-route-search="@search" asp-route-from="@from" asp-route-to="@to">All (@allCount)</a>
+    @foreach (var s in statuses)
+    {
+        <a class="chip-o @(cur == s ? "on" : "")"
+           asp-action="Index" asp-route-status="@s" asp-route-search="@search" asp-route-from="@from" asp-route-to="@to">@s (@CountFor(s))</a>
+    }
+</div>
+
+<div class="adm-panel">
+    <form method="get" asp-action="Index" class="row g-2 align-items-end">
+        <input type="hidden" name="status" value="@cur" />
+        <div class="col-md-4">
+            <label class="form-label small mb-1">Search</label>
+            <input type="text" name="search" value="@search" class="form-control" placeholder="Order #, customer name or email" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small mb-1">From</label>
+            <input type="date" name="from" value="@from" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small mb-1">To</label>
+            <input type="date" name="to" value="@to" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn-adm w-100"><i class="bi bi-funnel"></i> Filter</button>
+        </div>
+    </form>
+</div>
+
+<div class="adm-summary mb-3">
+    <span><i class="bi bi-receipt"></i> <b>@filteredCount</b> orders</span>
+    <span><i class="bi bi-cash-stack"></i> Total income: <b>$@filteredIncome.ToString("N2")</b> <small class="text-muted">(excl. cancelled)</small></span>
+</div>
+
+<div class="adm-panel table-responsive">
+    <table class="table adm-table align-middle">
+        <thead>
+            <tr>
+                <th>Order #</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Payment</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr><td colspan="8" class="text-center text-muted py-4">No orders found.</td></tr>
+            }
+            @foreach (var o in Model)
+            {
+                <tr>
+                    <td class="fw-semibold">@o.OrderNumber</td>
+                    <td>
+                        @if (o.User != null)
+                        {
+                            <div>@o.User.FirstName @o.User.LastName</div>
+                            <small class="text-muted">@o.User.Email</small>
+                        }
+                    </td>
+                    <td>@o.OrderDate.ToString("dd MMM yyyy")</td>
+                    <td>@o.OrderDetails.Sum(d => d.Quantity)</td>
+                    <td class="fw-bold">$@o.GrandTotal.GetValueOrDefault().ToString("N2")</td>
+                    <td><span class="pay-badge @(o.PaymentStatus == "Paid" ? "paid" : "unpaid")">@o.PaymentStatus</span></td>
+                    <td><span class="st st-@o.Status">@o.Status</span></td>
+                    <td><a class="btn btn-sm btn-outline-success" asp-action="Details" asp-route-id="@o.OrderId"><i class="bi bi-eye"></i></a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (totalPages > 1)
+{
+    <nav>
+        <ul class="pagination pagination-sm">
+            @for (var p = 1; p <= totalPages; p++)
+            {
+                <li class="page-item @(p == page ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-status="@cur" asp-route-search="@search"
+                       asp-route-from="@from" asp-route-to="@to" asp-route-page="@p">@p</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

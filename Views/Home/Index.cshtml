@@ -1,64 +1,102 @@
-﻿@{
-    ViewData["Title"] = "ទំព័រដើម";
+﻿@using Microsoft.Extensions.Localization
+@using E_Commerce
+@inject IStringLocalizer<SharedResource> L
+@model E_Commerce.ViewModels.HomeViewModel
+@{
+    ViewData["Title"] = "Home";
 }
 
-<div class="custom-width mt-4">
-    <!-- ផ្នែក Hero Banner -->
-    <div class="p-4 mb-4 bg-light rounded-3 shadow-sm border">
-        <div class="container-fluid py-2">
-            <div class="row align-items-center">
-                <!-- ផ្នែកអត្ថបទ (ខាងឆ្វេង) -->
-                <div class="col-md-7">
-                    <h1 class="display-6 fw-bold text-primary">ស្វាគមន៍មកកាន់ E-Commerce សៀវភៅ</h1>
-                    <p class="fs-5 mt-3">
-                        ស្វែងរកសៀវភៅល្អៗ និងអ្នកនិពន្ធល្បីៗជាច្រើននៅទីនេះ។ យើងផ្តល់ជូននូវបទពិសោធន៍អានដ៏អស្ចារ្យសម្រាប់អ្នក។
-                    </p>
-                    <button class="btn btn-primary btn-lg mt-3" type="button">ស្វែងរកសៀវភៅឥឡូវនេះ</button>
-                </div>
+<partial name="_HeroBanner" />
 
-                <!-- ផ្នែករូបភាព (ខាងស្តាំ) -->
-                <div class="col-md-5 text-center mt-4 mt-md-0">
-                    <img src="~/images/slide-pic.webp" class="img-fluid rounded shadow-sm" alt="Book Banner" style="max-height: 250px;">
+<div class="container mt-4">
+    @if (Model.FeaturedBooks.Any())
+    {
+        <section class="mb-5">
+            <div class="sec-head d-flex justify-content-between align-items-end flex-wrap gap-2">
+                <div>
+                    <span class="sec-eyebrow">@L["Handpicked for you"]</span>
+                    <h3 class="sec-title">@L["Featured"] <span class="hl">@L["Books"]</span></h3>
                 </div>
+                <a class="btn-soft btn" asp-controller="Books" asp-action="Index">@L["View all"] <i class="bi bi-arrow-right"></i></a>
             </div>
-        </div>
-    </div>
-
-    <!-- ផ្នែកបង្ហាញចំណាត់ថ្នាក់ ឬសៀវភៅលេចធ្លោ (Grid View) -->
-    <div class="row mt-5 g-4">
-        <h3 class="mb-3 border-bottom pb-2">សៀវភៅពេញនិយមប្រចាំសប្តាហ៍</h3>
-
-        <!-- កាតទី១ -->
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0 bg-light">
-                <div class="card-body text-center">
-                    <h5 class="card-title fw-bold">ប្រលោមលោក</h5>
-                    <p class="card-text text-muted">សៀវភៅប្រលោមលោកថ្មីៗជាច្រើនកំពុងរង់ចាំអ្នក។</p>
-                    <a href="#" class="btn btn-outline-primary mt-2">មើលបន្ថែម</a>
-                </div>
+            <div class="row g-3">
+                @foreach (var book in Model.FeaturedBooks)
+                {
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <partial name="_BookCard" model="book" />
+                    </div>
+                }
             </div>
-        </div>
+        </section>
+    }
 
-        <!-- កាតទី២ -->
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0 bg-light">
-                <div class="card-body text-center">
-                    <h5 class="card-title fw-bold">បច្ចេកវិទ្យា & IT</h5>
-                    <p class="card-text text-muted">សៀវភៅទាក់ទងនឹងការសរសេរកូដ និងការអភិវឌ្ឍកម្មវិធី។</p>
-                    <a href="#" class="btn btn-outline-primary mt-2">មើលបន្ថែម</a>
+    @if (Model.NewArrivals.Any())
+    {
+        <section class="mb-5 sec-band">
+            <div class="sec-head d-flex justify-content-between align-items-end flex-wrap gap-2">
+                <div>
+                    <span class="sec-eyebrow">@L["Fresh this week"]</span>
+                    <h3 class="sec-title">@L["New"] <span class="hl">@L["Arrivals"]</span></h3>
                 </div>
+                <a class="btn-soft btn" asp-controller="Books" asp-action="Index" asp-route-sortBy="newest">@L["View all"] <i class="bi bi-arrow-right"></i></a>
             </div>
-        </div>
+            <div class="row g-3">
+                @foreach (var book in Model.NewArrivals)
+                {
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <partial name="_BookCard" model="book" />
+                    </div>
+                }
+            </div>
+        </section>
+    }
 
-        <!-- កាតទី៣ -->
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0 bg-light">
-                <div class="card-body text-center">
-                    <h5 class="card-title fw-bold">ប្រវត្តិសាស្ត្រ</h5>
-                    <p class="card-text text-muted">សិក្សាពីអតីតកាល ដើម្បីស្វែងយល់ពីបច្ចុប្បន្ន។</p>
-                    <a href="#" class="btn btn-outline-primary mt-2">មើលបន្ថែម</a>
+    @if (Model.BestSellers.Any())
+    {
+        <section class="mb-5">
+            <div class="sec-head d-flex justify-content-between align-items-end flex-wrap gap-2">
+                <div>
+                    <span class="sec-eyebrow">@L["Reader favorites"]</span>
+                    <h3 class="sec-title">@L["Best"] <span class="hl">@L["Sellers"]</span></h3>
                 </div>
+                <a class="btn-soft btn" asp-controller="Books" asp-action="Index">@L["View all"] <i class="bi bi-arrow-right"></i></a>
             </div>
-        </div>
-    </div>
+            <div class="row g-3">
+                @foreach (var book in Model.BestSellers)
+                {
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <partial name="_BookCard" model="book" />
+                    </div>
+                }
+            </div>
+        </section>
+    }
+
+    @if (Model.Categories.Any())
+    {
+        <section class="mb-5">
+            <div class="sec-head d-flex justify-content-between align-items-end flex-wrap gap-2">
+                <div>
+                    <span class="sec-eyebrow">@L["Find your shelf"]</span>
+                    <h3 class="sec-title">@L["Browse by"] <span class="hl">@L["Category"]</span></h3>
+                </div>
+                <a class="btn-soft btn" asp-controller="Books" asp-action="Index">@L["View all"] <i class="bi bi-arrow-right"></i></a>
+            </div>
+            <div class="row g-3">
+                @foreach (var cat in Model.Categories)
+                {
+                    <div class="col-md-4">
+                        <a asp-controller="Books" asp-action="Index" asp-route-categoryId="@cat.CategoryId" class="text-decoration-none">
+                            <div class="card h-100 shadow-sm border-0">
+                                <div class="card-body">
+                                    <h5 class="card-title">@cat.CategoryName</h5>
+                                    <p class="card-text text-muted">@cat.BookCount @L["Books"]</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        </section>
+    }
 </div>

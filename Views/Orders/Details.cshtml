@@ -1,0 +1,77 @@
+﻿@using Microsoft.Extensions.Localization
+@using E_Commerce
+@inject IStringLocalizer<SharedResource> L
+@model Order
+@{
+    ViewData["Title"] = "Order " + Model.OrderNumber;
+    var flow = new[] { "Pending", "Processing", "Shipped", "Delivered" };
+    var icons = new[] { "bi-receipt", "bi-box-seam", "bi-truck", "bi-house-check" };
+    var idx = Array.IndexOf(flow, Model.Status);
+    var confirmCancel = L["Cancel this order?"].Value;
+}
+<link rel="stylesheet" href="~/css/orders.css" asp-append-version="true" />
+<div class="container py-4">
+    <a asp-action="Index" class="small no-print"><i class="bi bi-arrow-left"></i> @L["Back to orders"]</a>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 my-3">
+        <h2 class="mb-0">@L["Order"] @Model.OrderNumber</h2>
+        <span class="st st-@Model.Status">@L[Model.Status]</span>
+    </div>
+
+    @if (Model.Status == "Cancelled")
+    {
+        <div class="alert alert-danger"><i class="bi bi-x-circle"></i> @L["This order was cancelled."]</div>
+    }
+    else
+    {
+        <div class="panel-o mb-4"><div class="steps">
+            @for (var i = 0; i < flow.Length; i++)
+            {
+                <div class="step @(i <= idx ? "done" : "")"><i class="bi @icons[i]"></i>@L[flow[i]]</div>
+            }
+        </div></div>
+    }
+
+    <div class="row g-4">
+        <div class="col-lg-8"><div class="panel-o">
+            <h5 class="mb-3">@L["Items"]</h5>
+            @foreach (var d in Model.OrderDetails)
+            {
+                <div class="d-flex align-items-center gap-3 py-3 border-bottom">
+                    <img src="@(string.IsNullOrEmpty(d.Book?.ImageUrl) ? "/images/placeholder.svg" : d.Book.ImageUrl)" width="56" height="74" style="object-fit:cover;border-radius:6px" alt="" onerror="this.src='/images/placeholder.svg'" />
+                    <div class="flex-grow-1">
+                        <a class="fw-semibold" asp-controller="Books" asp-action="Details" asp-route-id="@d.BookId">@d.Book?.Title</a>
+                        <div class="small text-muted">$@d.UnitPrice.ToString("N2") x @d.Quantity</div>
+                    </div>
+                    <div class="fw-bold">$@d.Subtotal.GetValueOrDefault().ToString("N2")</div>
+                </div>
+            }
+        </div></div>
+
+        <div class="col-lg-4">
+            <div class="panel-o mb-3">
+                <h5>@L["Summary"]</h5>
+                <div class="d-flex justify-content-between"><span>@L["Subtotal"]</span><span>$@Model.Subtotal.GetValueOrDefault().ToString("N2")</span></div>
+                <div class="d-flex justify-content-between"><span>@L["Discount"]</span><span>-$@Model.Discount.GetValueOrDefault().ToString("N2")</span></div>
+                <div class="d-flex justify-content-between"><span>@L["Shipping"]</span><span>$@Model.ShippingFee.GetValueOrDefault().ToString("N2")</span></div>
+                <div class="d-flex justify-content-between"><span>@L["Tax"]</span><span>$@Model.Tax.GetValueOrDefault().ToString("N2")</span></div>
+                <hr />
+                <div class="d-flex justify-content-between fs-5 fw-bold"><span>@L["Total"]</span><span style="color:var(--g)">$@Model.GrandTotal.GetValueOrDefault().ToString("N2")</span></div>
+            </div>
+            <div class="panel-o mb-3">
+                <h5>@L["Delivery & payment"]</h5>
+                <p class="mb-1"><i class="bi bi-geo-alt"></i> @Model.ShippingAddress</p>
+                <p class="mb-1"><i class="bi bi-truck"></i> @Model.ShippingMethod?.MethodName</p>
+                <p class="mb-0"><i class="bi bi-credit-card"></i> @Model.Payment?.PaymentMethod?.MethodName (@Model.Payment?.Status)</p>
+            </div>
+            <div class="d-grid gap-2 no-print">
+                <button type="button" class="btn btn-outline-dark" onclick="window.print()"><i class="bi bi-printer"></i> @L["Print invoice"]</button>
+                @if (Model.Status == "Pending")
+                {
+                    <form asp-action="Cancel" asp-route-id="@Model.OrderId" method="post" onsubmit="return confirm('@confirmCancel')">
+                        <button class="btn btn-outline-danger w-100"><i class="bi bi-x-circle"></i> @L["Cancel order"]</button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>

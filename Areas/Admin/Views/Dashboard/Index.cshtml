@@ -1,0 +1,278 @@
+@using System.Text.Json
+@model E_Commerce.Areas.Admin.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    var firstName = User.Identity?.Name?.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "Admin";
+    var hasOrders = Model.TotalOrders > 0;
+    var incomeUp = Model.IncomeChangePct >= 0;
+
+    var monthLabels = JsonSerializer.Serialize(Model.MonthlyIncome.Select(m => m.Label));
+    var monthData = JsonSerializer.Serialize(Model.MonthlyIncome.Select(m => m.Amount));
+    var statusLabels = JsonSerializer.Serialize(Model.OrdersByStatus.Select(s => s.Status));
+    var statusData = JsonSerializer.Serialize(Model.OrdersByStatus.Select(s => s.Count));
+}
+
+<div class="dash-head d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <div>
+        <h2>Welcome back, @firstName</h2>
+        <div class="dash-date"><i class="bi bi-calendar3"></i> @DateTime.Now.ToString("dddd, dd MMMM yyyy")</div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap no-print">
+        <a class="btn-adm" asp-area="Admin" asp-controller="Books" asp-action="Create"><i class="bi bi-plus-lg"></i> New book</a>
+        <a class="btn btn-outline-success" asp-area="Admin" asp-controller="Orders" asp-action="Index"><i class="bi bi-receipt"></i> View orders</a>
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card">
+            <div class="kpi-icon"><i class="bi bi-cash-stack"></i></div>
+            <div>
+                <div class="kpi-num">$@Model.TotalIncome.ToString("N2")</div>
+                <div class="kpi-label">Total income</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card">
+            <div class="kpi-icon"><i class="bi bi-calendar-check"></i></div>
+            <div>
+                <div class="kpi-num">$@Model.IncomeThisMonth.ToString("N2")</div>
+                <div class="kpi-label">Income this month</div>
+                <div class="kpi-sub @(incomeUp ? "up" : "down")">
+                    <i class="bi @(incomeUp ? "bi-arrow-up-short" : "bi-arrow-down-short")"></i>@Math.Abs(Model.IncomeChangePct).ToString("0.#")% vs last month
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card">
+            <div class="kpi-icon"><i class="bi bi-receipt"></i></div>
+            <div>
+                <div class="kpi-num">@Model.TotalOrders</div>
+                <div class="kpi-label">Orders</div>
+                <div class="kpi-sub text-muted">@Model.PendingOrders pending</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card">
+            <div class="kpi-icon"><i class="bi bi-people"></i></div>
+            <div>
+                <div class="kpi-num">@Model.TotalCustomers</div>
+                <div class="kpi-label">Customers</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-sm-4">
+        <div class="mini-card">
+            <div class="kpi-icon"><i class="bi bi-book"></i></div>
+            <div>
+                <div class="kpi-num">@Model.TotalBooks</div>
+                <div class="kpi-label">Books</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="mini-card @(Model.LowStockBooks > 0 ? "warn" : "")">
+            <div class="kpi-icon"><i class="bi bi-exclamation-triangle"></i></div>
+            <div>
+                <div class="kpi-num">@Model.LowStockBooks</div>
+                <div class="kpi-label">Low stock (&lt; 10)</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="mini-card @(Model.PendingOrders > 0 ? "warn" : "")">
+            <div class="kpi-icon"><i class="bi bi-hourglass-split"></i></div>
+            <div>
+                <div class="kpi-num">@Model.PendingOrders</div>
+                <div class="kpi-label">Pending orders</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-7">
+        <div class="adm-panel">
+            <h5>Income, last 6 months</h5>
+            @if (hasOrders)
+            {
+                <div class="chart-box"><canvas id="incomeChart"></canvas></div>
+            }
+            else
+            {
+                <div class="dash-empty"><i class="bi bi-bar-chart"></i>No income data yet.</div>
+            }
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="adm-panel">
+            <h5>Orders by status</h5>
+            @if (hasOrders)
+            {
+                <div class="chart-box"><canvas id="statusChart"></canvas></div>
+            }
+            else
+            {
+                <div class="dash-empty"><i class="bi bi-pie-chart"></i>No orders yet.</div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-6">
+        <div class="adm-panel">
+            <h5>Top selling books</h5>
+            @if (!Model.TopBooks.Any())
+            {
+                <div class="dash-empty"><i class="bi bi-book"></i>No sales yet.</div>
+            }
+            <div class="dash-list">
+                @foreach (var b in Model.TopBooks)
+                {
+                    <div class="dash-item">
+                        <img class="dash-item-img" alt=""
+                             src="@(string.IsNullOrWhiteSpace(b.Cover) ? "/images/placeholder.svg" : b.Cover)"
+                             onerror="this.src='/images/placeholder.svg'" />
+                        <div class="dash-item-info">
+                            <div class="dash-item-title">@b.Title</div>
+                            <div class="dash-item-sub">@b.Quantity sold</div>
+                        </div>
+                        <div class="dash-item-val">$@b.Revenue.ToString("N2")</div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="adm-panel">
+            <h5>Low stock</h5>
+            @if (!Model.LowStock.Any())
+            {
+                <div class="dash-empty"><i class="bi bi-check-circle"></i>All books are well stocked.</div>
+            }
+            <div class="dash-list">
+                @foreach (var b in Model.LowStock)
+                {
+                    <div class="dash-item">
+                        <img class="dash-item-img" alt=""
+                             src="@(string.IsNullOrWhiteSpace(b.Cover) ? "/images/placeholder.svg" : b.Cover)"
+                             onerror="this.src='/images/placeholder.svg'" />
+                        <div class="dash-item-info">
+                            <div class="dash-item-title">@b.Title</div>
+                        </div>
+                        @if (b.Stock <= 0)
+                        {
+                            <span class="stock-badge out">Out of stock</span>
+                        }
+                        else if (b.Stock < 10)
+                        {
+                            <span class="stock-badge low">@b.Stock left</span>
+                        }
+                        else
+                        {
+                            <span class="stock-badge in">@b.Stock in stock</span>
+                        }
+                        <a class="btn btn-sm btn-outline-success" asp-area="Admin" asp-controller="Books" asp-action="Edit" asp-route-id="@b.BookId">Edit</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="adm-panel table-responsive">
+    <h5>Recent orders</h5>
+    @if (!Model.RecentOrders.Any())
+    {
+        <div class="dash-empty"><i class="bi bi-receipt"></i>No orders yet.</div>
+    }
+    else
+    {
+        <table class="table adm-table align-middle">
+            <thead>
+                <tr><th>Order #</th><th>Customer</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var o in Model.RecentOrders)
+                {
+                    <tr>
+                        <td class="fw-semibold">@o.OrderNumber</td>
+                        <td>@o.Customer</td>
+                        <td>@o.Date.ToString("dd MMM yyyy")</td>
+                        <td class="fw-bold">$@o.Total.ToString("N2")</td>
+                        <td><span class="st st-@o.Status">@o.Status</span></td>
+                        <td><a class="btn btn-sm btn-outline-success" asp-area="Admin" asp-controller="Orders" asp-action="Details" asp-route-id="@o.OrderId">View</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@section Scripts {
+    @if (hasOrders)
+    {
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+        <script>
+            (function () {
+                Chart.defaults.font.family = "'Inter','MiSans Khmer',sans-serif";
+                var monthLabels = @Html.Raw(monthLabels);
+                var monthData = @Html.Raw(monthData);
+                var statusLabels = @Html.Raw(statusLabels);
+                var statusData = @Html.Raw(statusData);
+
+                var barBg = monthData.map(function (_, i) { return i === monthData.length - 1 ? '#adff2f' : '#2e7d32'; });
+                var barBorder = monthData.map(function (_, i) { return i === monthData.length - 1 ? '#1b5e20' : '#2e7d32'; });
+
+                var incomeCtx = document.getElementById('incomeChart');
+                if (incomeCtx) {
+                    new Chart(incomeCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: monthLabels,
+                            datasets: [{
+                                data: monthData,
+                                backgroundColor: barBg,
+                                borderColor: barBorder,
+                                borderWidth: 2,
+                                borderRadius: 6
+                            }]
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: { y: { beginAtZero: true } }
+                        }
+                    });
+                }
+
+                var statusCtx = document.getElementById('statusChart');
+                if (statusCtx) {
+                    new Chart(statusCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: statusLabels,
+                            datasets: [{
+                                data: statusData,
+                                backgroundColor: ['#f59e0b', '#3b82f6', '#6366f1', '#22c55e', '#ef4444'],
+                                borderWidth: 2,
+                                borderColor: '#fffdf6'
+                            }]
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            plugins: { legend: { position: 'bottom' } }
+                        }
+                    });
+                }
+            })();
+        </script>
+    }
+}

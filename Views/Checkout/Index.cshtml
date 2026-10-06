@@ -1,0 +1,165 @@
+﻿@using Microsoft.Extensions.Localization
+@using E_Commerce
+@inject IStringLocalizer<SharedResource> L
+@model E_Commerce.ViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "Checkout";
+    var freeShip = Model.Subtotal >= Model.FreeShippingThreshold;
+    string PayIcon(string name) =>
+        name.Contains("Cash", StringComparison.OrdinalIgnoreCase) ? "bi-cash-coin" :
+        name.Contains("ABA", StringComparison.OrdinalIgnoreCase) ? "bi-phone" :
+        name.Contains("Credit", StringComparison.OrdinalIgnoreCase) || name.Contains("Card", StringComparison.OrdinalIgnoreCase) ? "bi-credit-card" :
+        "bi-wallet2";
+}
+<link rel="stylesheet" href="~/css/checkout.css" asp-append-version="true" />
+
+<div class="container py-4 co-page">
+    <h2 class="co-title mb-3">@L["Checkout"]</h2>
+
+    <div class="co-steps mb-4">
+        <div class="co-step done"><span class="co-dot"><i class="bi bi-check"></i></span> @L["Cart"]</div>
+        <div class="co-step active"><span class="co-dot">2</span> @L["Checkout"]</div>
+        <div class="co-step"><span class="co-dot">3</span> @L["Complete"]</div>
+    </div>
+
+    <form asp-controller="Checkout" asp-action="Index" method="post" id="coForm">
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="co-card">
+                    <h5>@L["Delivery information"]</h5>
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label">@L["Full name"]</label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Phone" class="form-label">@L["Phone"]</label>
+                        <input asp-for="Phone" class="form-control" />
+                        <span asp-validation-for="Phone" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ShippingAddress" class="form-label">@L["Address"]</label>
+                        <textarea asp-for="ShippingAddress" class="form-control" rows="2"></textarea>
+                        <span asp-validation-for="ShippingAddress" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-0">
+                        <label asp-for="Note" class="form-label">@L["Note (optional)"]</label>
+                        <textarea asp-for="Note" class="form-control" rows="2"></textarea>
+                        <span asp-validation-for="Note" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="co-card">
+                    <h5>@L["Shipping method"]</h5>
+                    @foreach (var s in Model.ShippingMethods)
+                    {
+                        var price = s.Price ?? 0m;
+                        <label class="co-radio">
+                            <input type="radio" asp-for="ShippingMethodId" value="@s.ShippingMethodId"
+                                   data-price-cents="@((int)Math.Round(price * 100))" />
+                            <span class="co-radio-body">
+                                <span class="co-radio-name">
+                                    @s.MethodName
+                                    @if (s.EstimatedDays > 0)
+                                    {
+                                        <span class="co-radio-note">@L["About {0} days", s.EstimatedDays]</span>
+                                    }
+                                </span>
+                                <span class="co-radio-price">@(freeShip || price == 0 ? L["Free"].Value : "$" + price.ToString("N2"))</span>
+                            </span>
+                        </label>
+                    }
+                    <span asp-validation-for="ShippingMethodId" class="text-danger small"></span>
+                </div>
+
+                <div class="co-card">
+                    <h5>@L["Payment method"]</h5>
+                    @foreach (var p in Model.PaymentMethods)
+                    {
+                        <label class="co-radio">
+                            <input type="radio" asp-for="PaymentMethodId" value="@p.PaymentMethodId" />
+                            <span class="co-radio-body">
+                                <span class="d-flex align-items-center gap-2">
+                                    <i class="bi @PayIcon(p.MethodName) co-pay-icon"></i>
+                                    <span>
+                                        <span class="co-radio-name">@p.MethodName</span>
+                                        @if (p.MethodName.Contains("Cash", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <span class="co-radio-note">@L["Pay when you receive your books"]</span>
+                                        }
+                                    </span>
+                                </span>
+                            </span>
+                        </label>
+                    }
+                    <span asp-validation-for="PaymentMethodId" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="co-summary">
+                    <h5>@L["Order summary"]</h5>
+                    @foreach (var it in Model.Items)
+                    {
+                        <div class="co-item">
+                            <img src="@(string.IsNullOrWhiteSpace(it.ImageUrl) ? "/images/placeholder.svg" : it.ImageUrl)"
+                                 alt="@it.Title" onerror="this.src='/images/placeholder.svg'" />
+                            <div class="co-item-info">
+                                <div class="co-item-title">@it.Title</div>
+                                <div class="co-item-qty">@it.Quantity &times; $@it.UnitPrice.ToString("N2")</div>
+                            </div>
+                            <div class="co-item-total">$@it.Subtotal.ToString("N2")</div>
+                        </div>
+                    }
+                    <div class="co-row mt-2"><span>@L["Subtotal"]</span><span>$@Model.Subtotal.ToString("N2")</span></div>
+                    <div class="co-row"><span>@L["Shipping"]</span><span id="coShipping">@(Model.ShippingFee == 0 ? L["Free"].Value : "$" + Model.ShippingFee.ToString("N2"))</span></div>
+                    <div class="co-total"><span>@L["Total"]</span><span id="coTotal">$@Model.Total.ToString("N2")</span></div>
+
+                    <button type="submit" class="co-submit" id="coSubmit">@L["Place order"]</button>
+                    <a class="co-back" asp-controller="Cart" asp-action="Index"><i class="bi bi-arrow-left"></i> @L["Back to cart"]</a>
+                    <div class="co-trust">
+                        <span><i class="bi bi-shield-lock"></i> @L["Secure payment"]</span>
+                        <span><i class="bi bi-arrow-repeat"></i> @L["Easy returns"]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    (function () {
+        var subtotalC = @((int)Math.Round(Model.Subtotal * 100));
+        var thresholdC = @((int)Math.Round(Model.FreeShippingThreshold * 100));
+        var freeShip = subtotalC >= thresholdC;
+        var shipEl = document.getElementById('coShipping');
+        var totalEl = document.getElementById('coTotal');
+        var freeText = '@L["Free"]';
+
+        function fmt(c) { return '$' + (c / 100).toFixed(2); }
+
+        function update() {
+            var sel = document.querySelector('input[name="ShippingMethodId"]:checked');
+            var priceC = sel ? (parseInt(sel.getAttribute('data-price-cents'), 10) || 0) : 0;
+            var feeC = freeShip ? 0 : priceC;
+            shipEl.textContent = feeC === 0 ? freeText : fmt(feeC);
+            totalEl.textContent = fmt(subtotalC + feeC);
+        }
+        document.querySelectorAll('input[name="ShippingMethodId"]').forEach(function (r) {
+            r.addEventListener('change', update);
+        });
+        update();
+
+        // Protect against double clicks
+        var form = document.getElementById('coForm');
+        var btn = document.getElementById('coSubmit');
+        form.addEventListener('submit', function () {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>@L["Placing order..."]';
+        });
+    })();
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

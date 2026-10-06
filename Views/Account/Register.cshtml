@@ -1,0 +1,108 @@
+﻿@using Microsoft.Extensions.Localization
+@using E_Commerce
+@inject IStringLocalizer<SharedResource> L
+@model E_Commerce.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+<link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
+
+<div class="au-wrap">
+    <aside class="au-brand">
+        <h2>@L["Join Book Cambodia"]</h2>
+        <p>@L["Create an account to order books and follow your deliveries."]</p>
+        <ul class="au-points">
+            <li><i class="bi bi-book"></i> @L["Browse books in Khmer and English"]</li>
+            <li><i class="bi bi-receipt"></i> @L["Track your orders"]</li>
+            <li><i class="bi bi-bag-check"></i> @L["Faster checkout"]</li>
+        </ul>
+    </aside>
+
+    <section class="au-form-side">
+        <a class="au-logo" asp-controller="Home" asp-action="Index" aria-label="Book Cambodia">
+            <partial name="_BrandLogo" />
+        </a>
+        <h1 class="au-title">@L["Register"]</h1>
+        <p class="au-sub">@L["Fill in your details to create your account."]</p>
+
+        <form asp-controller="Account" asp-action="Register" method="post">
+            <div asp-validation-summary="ModelOnly" class="au-alert"></div>
+
+            <div class="au-row">
+                <div class="au-field">
+                    <label asp-for="FirstName" class="form-label">@L["First name"]</label>
+                    <div class="au-input">
+                        <i class="bi bi-person au-ico"></i>
+                        <input asp-for="FirstName" class="form-control" autocomplete="given-name" autofocus />
+                    </div>
+                    <span asp-validation-for="FirstName" class="au-err"></span>
+                </div>
+                <div class="au-field">
+                    <label asp-for="LastName" class="form-label">@L["Last name"]</label>
+                    <div class="au-input">
+                        <i class="bi bi-person au-ico"></i>
+                        <input asp-for="LastName" class="form-control" autocomplete="family-name" />
+                    </div>
+                    <span asp-validation-for="LastName" class="au-err"></span>
+                </div>
+            </div>
+
+            <div class="au-field">
+                <label asp-for="Email" class="form-label">@L["Email"]</label>
+                <div class="au-input">
+                    <i class="bi bi-envelope au-ico"></i>
+                    <input asp-for="Email" class="form-control" placeholder="you@example.com" autocomplete="email" />
+                </div>
+                <span asp-validation-for="Email" class="au-err"></span>
+            </div>
+
+            <div class="au-field">
+                <label asp-for="Phone" class="form-label">@L["Phone"]</label>
+                <div class="au-input">
+                    <i class="bi bi-telephone au-ico"></i>
+                    <input asp-for="Phone" class="form-control" autocomplete="tel" />
+                </div>
+                <span asp-validation-for="Phone" class="au-err"></span>
+            </div>
+
+            <div class="au-row">
+                <div class="au-field">
+                    <label asp-for="Password" class="form-label">@L["Password"]</label>
+                    <div class="au-input has-eye">
+                        <i class="bi bi-lock au-ico"></i>
+                        <input asp-for="Password" class="form-control" autocomplete="new-password" />
+                        <button type="button" class="au-eye" data-toggle-pw="Password" aria-label="Show password"><i class="bi bi-eye"></i></button>
+                    </div>
+                    <span asp-validation-for="Password" class="au-err"></span>
+                </div>
+                <div class="au-field">
+                    <label asp-for="ConfirmPassword" class="form-label">@L["Confirm password"]</label>
+                    <div class="au-input has-eye">
+                        <i class="bi bi-shield-lock au-ico"></i>
+                        <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
+                        <button type="button" class="au-eye" data-toggle-pw="ConfirmPassword" aria-label="Show password"><i class="bi bi-eye"></i></button>
+                    </div>
+                    <span asp-validation-for="ConfirmPassword" class="au-err"></span>
+                </div>
+            </div>
+
+            <button type="submit" class="au-btn mt-2"><i class="bi bi-person-plus"></i> @L["Register"]</button>
+        </form>
+
+        <p class="au-switch">@L["Already have an account?"] <a asp-controller="Account" asp-action="Login">@L["Login"]</a></p>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.querySelectorAll('[data-toggle-pw]').forEach(function (b) {
+            b.addEventListener('click', function () {
+                var i = document.getElementById(b.getAttribute('data-toggle-pw'));
+                var show = i.type === 'password';
+                i.type = show ? 'text' : 'password';
+                b.querySelector('i').className = show ? 'bi bi-eye-slash' : 'bi bi-eye';
+            });
+        });
+    </script>
+}

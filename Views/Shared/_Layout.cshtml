@@ -1,18 +1,72 @@
 ﻿<!DOCTYPE html>
-<html lang="km">
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - E_Commerce</title>
+    <title>@ViewData["Title"] - BookNest</title>
+
+    <!-- Set the theme before any CSS so there is no flash of the wrong theme -->
+    <script>
+        (function () {
+            var theme = null;
+            try { theme = localStorage.getItem('theme'); } catch (e) {}
+            if (theme !== 'light' && theme !== 'dark') {
+                theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            var el = document.documentElement;
+            el.setAttribute('data-theme', theme);
+            el.setAttribute('data-bs-theme', theme);
+        })();
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Khmer font (loaded first so Khmer text always uses MiSans Khmer) -->
+    <link rel="preload" href="~/fonts/MiSansKhmer-Regular.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="~/fonts/MiSansKhmer-Bold.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="~/css/fonts.css" asp-append-version="true" />
+
     <!-- Bootstrap 5 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-    <partial name="_MainNavbar" />
     <partial name="_Navbar" />
+
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
+        @if (TempData["Success"] != null)
+        {
+            <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+                <div class="toast-header bg-success text-white">
+                    <i class="bi bi-check-circle me-2"></i>
+                    <strong class="me-auto">Success</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    @TempData["Success"]
+                </div>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+                <div class="toast-header bg-danger text-white">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    <strong class="me-auto">Error</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    @TempData["Error"]
+                </div>
+            </div>
+        }
+    </div>
 
     <div class="container mt-4">
         <main role="main" class="pb-3">
@@ -20,15 +74,22 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted mt-5 pt-3">
-        <div class="container text-center">
-            &copy; 2026 - E_Commerce - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+    <partial name="_Footer" />
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/js/theme.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+            toastElList.forEach(function (toastEl) {
+                var toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+                toast.show();
+            });
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

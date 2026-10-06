@@ -1,0 +1,149 @@
+﻿@using Microsoft.Extensions.Localization
+@using E_Commerce
+@inject IStringLocalizer<SharedResource> L
+@model E_Commerce.ViewModels.CartViewModel
+@{
+    ViewData["Title"] = "Shopping cart";
+}
+<link rel="stylesheet" href="~/css/cart.css" asp-append-version="true" />
+
+<div class="container py-4 cart-page">
+    @if (!Model.Items.Any())
+    {
+        <div class="cart-empty">
+            <div class="cart-empty-icon"><i class="bi bi-cart-x"></i></div>
+            <h3>@L["Your cart is empty"]</h3>
+            <p class="text-muted">@L["Browse our books and find something you love."]</p>
+            <a class="btn-green-pill" asp-controller="Books" asp-action="Index">@L["Start shopping"]</a>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <h2 class="cart-title">@L["Shopping cart"] <span class="cart-count">@Model.ItemCount @L["Items"]</span></h2>
+            <a class="cart-continue" asp-controller="Books" asp-action="Index"><i class="bi bi-arrow-left"></i> @L["Continue shopping"]</a>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                @foreach (var line in Model.Items)
+                {
+                    <div class="cart-line">
+                        <img class="cart-line-img"
+                             src="@(string.IsNullOrWhiteSpace(line.ImageUrl) ? "/images/placeholder.svg" : line.ImageUrl)"
+                             alt="@line.Title" onerror="this.src='/images/placeholder.svg'" />
+
+                        <div class="cart-line-info">
+                            <a class="cart-line-title" asp-controller="Books" asp-action="Details" asp-route-id="@line.BookId">@line.Title</a>
+                            @if (!string.IsNullOrEmpty(line.CategoryName))
+                            {
+                                <div class="cart-line-cat">@line.CategoryName</div>
+                            }
+                            <div class="cart-line-price">
+                                <span class="price">$@line.UnitPrice.ToString("N2")</span>
+                                @if (line.OldPrice.HasValue)
+                                {
+                                    <span class="old">$@line.OldPrice.Value.ToString("N2")</span>
+                                }
+                            </div>
+                            @if (line.MaxStock <= 0)
+                            {
+                                <div class="stock-warn">@L["Out of stock"]</div>
+                            }
+                            else if (line.Quantity >= line.MaxStock)
+                            {
+                                <div class="stock-warn">@L["Only {0} left in stock", line.MaxStock]</div>
+                            }
+                        </div>
+
+                        <form asp-controller="Cart" asp-action="Update" method="post" class="qty-form">
+                            <input type="hidden" name="cartItemId" value="@line.CartItemId" />
+                            <button type="button" class="qty-btn" data-step="-1" aria-label="Decrease quantity"><i class="bi bi-dash"></i></button>
+                            <input type="number" class="qty-input" name="quantity" value="@line.Quantity" min="1" max="@line.MaxStock" aria-label="Quantity" />
+                            <button type="button" class="qty-btn" data-step="1" aria-label="Increase quantity"><i class="bi bi-plus"></i></button>
+                        </form>
+
+                        <div class="cart-line-sub">$@line.Subtotal.ToString("N2")</div>
+
+                        <form asp-controller="Cart" asp-action="Remove" method="post" class="remove-form">
+                            <input type="hidden" name="cartItemId" value="@line.CartItemId" />
+                            <button type="submit" class="trash-btn" aria-label="Remove item"><i class="bi bi-trash3"></i></button>
+                        </form>
+                    </div>
+                }
+
+                <form asp-controller="Cart" asp-action="Clear" method="post" class="clear-form">
+                    <button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash3"></i> @L["Clear cart"]</button>
+                </form>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="cart-summary">
+                    <h4>@L["Order summary"]</h4>
+                    <div class="sum-row"><span>@L["Items"]</span><span>@Model.ItemCount</span></div>
+                    <div class="sum-row"><span>@L["Subtotal"]</span><span>$@Model.Subtotal.ToString("N2")</span></div>
+                    <div class="sum-row"><span>@L["Shipping"]</span><span class="text-muted small">@L["Calculated at checkout"]</span></div>
+                    <div class="sum-total"><span>@L["Total"]</span><span>$@Model.Subtotal.ToString("N2")</span></div>
+
+                    @{
+                        var threshold = Model.FreeShippingThreshold;
+                        var remaining = threshold - Model.Subtotal;
+                        var pct = threshold > 0 ? (int)Math.Min(100, Math.Round(Model.Subtotal / threshold * 100m)) : 100;
+                    }
+                    <div class="ship-progress"><div class="ship-fill" style="width:@pct%"></div></div>
+                    @if (remaining > 0)
+                    {
+                        <p class="ship-note">@L["Add {0} more for free delivery", "$" + remaining.ToString("N2")]</p>
+                    }
+                    else
+                    {
+                        <p class="ship-note ok"><i class="bi bi-check-circle-fill"></i> @L["You got free delivery!"]</p>
+                    }
+
+                    <a class="btn-checkout @(Model.HasStockIssue ? "disabled" : "")"
+                       asp-controller="Checkout" asp-action="Index"
+                       aria-disabled="@(Model.HasStockIssue ? "true" : "false")"
+                       tabindex="@(Model.HasStockIssue ? "-1" : "0")">@L["Proceed to checkout"]</a>
+
+                    <div class="trust-row">
+                        <span><i class="bi bi-shield-lock"></i> @L["Secure payment"]</span>
+                        <span><i class="bi bi-arrow-repeat"></i> @L["Easy returns"]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    (function () {
+        // Quantity stepper: +/- buttons and manual edits submit the Update form
+        document.querySelectorAll('.qty-form').forEach(function (f) {
+            var input = f.querySelector('.qty-input');
+            f.querySelectorAll('.qty-btn').forEach(function (b) {
+                b.addEventListener('click', function () {
+                    var v = (parseInt(input.value, 10) || 1) + parseInt(b.getAttribute('data-step'), 10);
+                    var min = parseInt(input.min, 10) || 1;
+                    var max = parseInt(input.max, 10) || 1;
+                    if (v < min) v = min;
+                    if (v > max) v = max;
+                    input.value = v;
+                    f.submit();
+                });
+            });
+            input.addEventListener('change', function () { f.submit(); });
+        });
+
+        // Confirm before removing a line / clearing the cart
+        document.querySelectorAll('.remove-form').forEach(function (f) {
+            f.addEventListener('submit', function (e) {
+                if (!confirm('Remove this item from your cart?')) e.preventDefault();
+            });
+        });
+        document.querySelectorAll('.clear-form').forEach(function (f) {
+            f.addEventListener('submit', function (e) {
+                if (!confirm('Remove all items from your cart?')) e.preventDefault();
+            });
+        });
+    })();
+</script>

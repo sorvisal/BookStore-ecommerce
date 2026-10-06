@@ -1,0 +1,137 @@
+﻿@using Microsoft.Extensions.Localization
+@using E_Commerce
+@inject IStringLocalizer<SharedResource> L
+@model E_Commerce.ViewModels.BookDetailsViewModel
+@{
+    ViewData["Title"] = Model.Book.Title;
+    var authors = string.Join(", ", Model.Authors.Select(a => a.FullName));
+    var img = !string.IsNullOrWhiteSpace(Model.Book.ImageUrl) ? Model.Book.ImageUrl : (!string.IsNullOrWhiteSpace(Model.Book.CoverImage) ? Model.Book.CoverImage : "/images/placeholder.svg");
+    var qtyLabel = L["Quantity"].Value;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="text-center">
+                <img src="@img" class="img-fluid shadow-sm" alt="@Model.Book.Title" onerror="this.src='/images/placeholder.svg'">
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h3>@Model.Book.Title</h3>
+            @if (!string.IsNullOrEmpty(authors))
+            {
+                <p class="text-muted">@L["by"] @authors</p>
+            }
+            <div class="mb-2">
+                <strong>@L["Category"]:</strong> @(Model.Book.Category?.CategoryName ?? "-")
+                @if (Model.Book.Publisher != null)
+                {
+                    <span class="ms-2"><strong>@L["Publisher"]:</strong> @Model.Book.Publisher.PublisherName</span>
+                }
+            </div>
+            <div class="mb-3">
+                @if (Model.Book.DiscountPrice.HasValue)
+                {
+                    <span class="h4 text-primary">$@Model.Book.DiscountPrice.Value.ToString("0.00")</span>
+                    <span class="text-muted text-decoration-line-through ms-2">$@Model.Book.Price.ToString("0.00")</span>
+                }
+                else
+                {
+                    <span class="h4 text-primary">$@Model.Book.Price.ToString("0.00")</span>
+                }
+            </div>
+            @if (Model.Book.StockQuantity <= 0)
+            {
+                <div class="alert alert-danger">@L["Out of stock"]</div>
+            }
+            else
+            {
+                <div class="text-success small mb-2"><i class="bi bi-check-circle"></i> @L["In stock"]</div>
+                <form asp-controller="Cart" asp-action="Add" method="post" class="d-flex align-items-center gap-2 mb-3">
+                    <input type="hidden" name="bookId" value="@Model.Book.BookId" />
+                    <input type="number" name="quantity" value="1" min="1" max="@Model.Book.StockQuantity" class="form-control" style="width:90px" aria-label="@qtyLabel" />
+                    <button type="submit" class="btn btn-accent"><i class="bi bi-cart-plus"></i> @L["Add to cart"]</button>
+                </form>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.Book.Description))
+            {
+                <div class="mb-3">
+                    <h5>@L["Description"]</h5>
+                    <p>@Model.Book.Description</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <hr class="my-4" />
+
+    <div class="row">
+        <div class="col-md-8">
+            <h5>@L["Reviews"] (@Model.Reviews.Count) - @L["Average"]: @Model.AverageRating.ToString("0.0")</h5>
+            @if (!Model.Reviews.Any())
+            {
+                <p class="text-muted">@L["No reviews yet."]</p>
+            }
+            @foreach (var r in Model.Reviews)
+            {
+                <div class="border-bottom py-2">
+                    <strong>@r.UserName</strong> - <span class="text-warning">@(r.Rating)★</span> <small class="text-muted">@r.CreatedAt.ToString("MMM dd, yyyy")</small>
+                    @if (!string.IsNullOrWhiteSpace(r.Comment))
+                    {
+                        <p class="mb-0">@r.Comment</p>
+                    }
+                </div>
+            }
+
+            @if (Model.CanReview)
+            {
+                <h6 class="mt-3">@L["Write a review"]</h6>
+                <form asp-action="AddReview" method="post">
+                    <input type="hidden" asp-for="NewReview.BookId" />
+                    <div class="mb-2">
+                        <label class="form-label">@L["Rating"]</label>
+                        <select asp-for="NewReview.Rating" class="form-select" style="width:auto">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">@L["Comment"]</label>
+                        <textarea asp-for="NewReview.Comment" class="form-control" rows="3"></textarea>
+                    </div>
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-primary">@L["Submit"]</button>
+                </form>
+            }
+        </div>
+        <div class="col-md-4">
+            @if (Model.RelatedBooks.Any())
+            {
+                <h5>@L["You may also like"]</h5>
+                @foreach (var b in Model.RelatedBooks)
+                {
+                    <a asp-action="Details" asp-route-id="@b.BookId" class="text-decoration-none text-dark">
+                        <div class="d-flex mb-2">
+                            <img src="@(!string.IsNullOrWhiteSpace(b.ImageUrl) ? b.ImageUrl : (!string.IsNullOrWhiteSpace(b.CoverImage) ? b.CoverImage : "/images/placeholder.svg"))" class="me-2" style="width:60px; height:80px; object-fit:cover;" onerror="this.src='/images/placeholder.svg'">
+                            <div>
+                                <div>@b.Title</div>
+                                @if (b.DiscountPrice.HasValue)
+                                {
+                                    <small class="text-primary">$@b.DiscountPrice.Value.ToString("0.00")</small>
+                                    <small class="text-muted text-decoration-line-through">$@b.Price.ToString("0.00")</small>
+                                }
+                                else
+                                {
+                                    <small class="text-primary">$@b.Price.ToString("0.00")</small>
+                                }
+                            </div>
+                        </div>
+                    </a>
+                }
+            }
+        </div>
+    </div>
+</div>

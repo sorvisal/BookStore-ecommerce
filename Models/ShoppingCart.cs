@@ -15,7 +15,7 @@ namespace E_Commerce.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         [ForeignKey(nameof(UserId))]
-        public User User { get; set; }
+        public User? User { get; set; }
 
         public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
     }

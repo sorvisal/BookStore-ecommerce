@@ -1,0 +1,71 @@
+﻿@using Microsoft.Extensions.Localization
+@using E_Commerce
+@inject IStringLocalizer<SharedResource> L
+@model E_Commerce.ViewModels.BookListViewModel
+@{
+    ViewData["Title"] = "Books";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="get" asp-action="Index">
+                        <div class="mb-3">
+                            <label class="form-label">@L["Search"]</label>
+                            <input type="text" name="search" class="form-control" value="@Model.Search" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">@L["Category"]</label>
+                            <select name="categoryId" class="form-select">
+                                <option value="">@L["All"]</option>
+                                @foreach (var c in Model.Categories)
+                                {
+                                    <option value="@c.CategoryId" selected="@(Model.CategoryId == c.CategoryId)">@c.CategoryName</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">@L["Sort By"]</label>
+                            <select name="sortBy" class="form-select">
+                                <option value="newest" selected="@(Model.SortBy == "newest")">@L["Newest"]</option>
+                                <option value="priceAsc" selected="@(Model.SortBy == "priceAsc")">@L["Price: Low to High"]</option>
+                                <option value="priceDesc" selected="@(Model.SortBy == "priceDesc")">@L["Price: High to Low"]</option>
+                                <option value="title" selected="@(Model.SortBy == "title")">@L["Title A-Z"]</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">@L["Filter"]</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            @if (!Model.Books.Any())
+            {
+                <div class="alert alert-info">@L["No books found."]</div>
+            }
+            else
+            {
+                <div class="row g-3">
+                    @foreach (var book in Model.Books)
+                    {
+                        <div class="col-sm-6 col-lg-4">
+                            <partial name="_BookCard" model="book" />
+                        </div>
+                    }
+                </div>
+                <nav class="mt-4">
+                    <ul class="pagination">
+                        @for (var i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.Page ? "active" : "")">
+                                <a class="page-link" asp-action="Index" asp-route-search="@Model.Search" asp-route-categoryId="@Model.CategoryId" asp-route-sortBy="@Model.SortBy" asp-route-page="@i">@i</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+@model List<Category>
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <span class="text-muted">@Model.Count categories</span>
+    <a class="btn-adm" asp-action="Create"><i class="bi bi-plus-lg"></i> New category</a>
+</div>
+
+<div class="adm-panel table-responsive">
+    <table class="table adm-table align-middle">
+        <thead>
+            <tr><th>Name</th><th>Description</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr><td colspan="4" class="text-center text-muted py-4">No categories yet.</td></tr>
+            }
+            @foreach (var c in Model)
+            {
+                <tr>
+                    <td class="fw-semibold">@c.CategoryName</td>
+                    <td class="text-muted">@c.Description</td>
+                    <td>
+                        @if (c.Status)
+                        {
+                            <span class="pay-badge paid">Active</span>
+                        }
+                        else
+                        {
+                            <span class="pay-badge unpaid">Hidden</span>
+                        }
+                    </td>
+                    <td class="text-nowrap text-end">
+                        <a class="btn btn-sm btn-outline-success" asp-action="Edit" asp-route-id="@c.CategoryId"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="Delete" asp-route-id="@c.CategoryId" method="post" class="d-inline"
+                              onsubmit="return confirm('Delete this category?')">
+                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash3"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

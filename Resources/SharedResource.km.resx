@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Access denied" xml:space="preserve"><value>ផ្ដាច់ការចូលប្រើ</value></data>
+  <data name="You do not have permission to view this page." xml:space="preserve"><value>អ្នកមិនមានសិទ្ធិមើលទំព័រនេះទេ។</value></data>
+  <data name="Back to Home" xml:space="preserve"><value>ត្រឡប់ទៅទំព័រដើម</value></data>
+  <data name="Home" xml:space="preserve"><value>ទំព័រដើម</value></data>
+  <data name="Books" xml:space="preserve"><value>សៀវភៅ</value></data>
+  <data name="Contact" xml:space="preserve"><value>ទំនាក់ទំនង</value></data>
+  <data name="About" xml:space="preserve"><value>អំពីយើង</value></data>
+  <data name="Log In" xml:space="preserve"><value>ចូលគណនី</value></data>
+  <data name="Sign up" xml:space="preserve"><value>ចុះឈ្មោះ</value></data>
+  <data name="Search books or authors..." xml:space="preserve"><value>ស្វែងរកសៀវភៅ ឬអ្នកនិពន្ធ...</value></data>
+  <data name="Signed in as" xml:space="preserve"><value>ចូលគណនីជា</value></data>
+  <data name="My orders" xml:space="preserve"><value>ការបញ្ជាទិញរបស់ខ្ញុំ</value></data>
+  <data name="Dashboard" xml:space="preserve"><value>ផ្ទាំងគ្រប់គ្រង</value></data>
+  <data name="Logout" xml:space="preserve"><value>ចាកចេញ</value></data>
+  <data name="Cart" xml:space="preserve"><value>រទេះ</value></data>
+  <data name="Your cozy corner for great books. Discover, read, and share stories that matter." xml:space="preserve"><value>ជ្រុងដ៏កក់ក្ដៅសម្រាប់សៀវភៅល្អៗ។ រកឃើញ អាន និងចែករំលែករឿងរ៉ាវដ៏មានន័យ។</value></data>
+  <data name="Shop" xml:space="preserve"><value>ហាង</value></data>
+  <data name="All rights reserved." xml:space="preserve"><value>រក្សាសិទ្ធិគ្រប់យ៉ាង។</value></data>
+  <data name="Crafted with" xml:space="preserve"><value>បង្កើតដោយ</value></data>
+  <data name="for book lovers" xml:space="preserve"><value>សម្រាប់អ្នកស្រឡាញ់សៀវភៅ</value></data>
+  <data name="Browse Books" xml:space="preserve"><value>រកមើលសៀវភៅ</value></data>
+  <data name="Shop New Arrivals" xml:space="preserve"><value>មើលសៀវភៅថ្មីៗ</value></data>
+  <data name="See Deals" xml:space="preserve"><value>មើលប្រូម៉ូសិន</value></data>
+  <data name="Explore the Catalog" xml:space="preserve"><value>រុករកកាតាឡុក</value></data>
+  <data name="Discover Kids' Books" xml:space="preserve"><value>ស្វែងរកសៀវភៅកុមារ</value></data>
+  <data name="Handpicked for you" xml:space="preserve"><value>ជ្រើសរើសពិសេសសម្រាប់អ្នក</value></data>
+  <data name="Featured" xml:space="preserve"><value>ពេញនិយម</value></data>
+  <data name="New" xml:space="preserve"><value>ថ្មី</value></data>
+  <data name="Arrivals" xml:space="preserve"><value>ទើបមកដល់</value></data>
+  <data name="Best" xml:space="preserve"><value>លក់ដាច់</value></data>
+  <data name="Sellers" xml:space="preserve"><value>បំផុត</value></data>
+  <data name="Browse by" xml:space="preserve"><value>រកមើលតាម</value></data>
+  <data name="Fresh this week" xml:space="preserve"><value>ថ្មីៗសប្ដាហ៍នេះ</value></data>
+  <data name="Reader favorites" xml:space="preserve"><value>ចំណូលចិត្តអ្នកអាន</value></data>
+  <data name="Find your shelf" xml:space="preserve"><value>រកធន់សៀវភៅរបស់អ្នក</value></data>
+  <data name="View all" xml:space="preserve"><value>មើលទាំងអស់</value></data>
+  <data name="readers" xml:space="preserve"><value>អ្នកអាន</value></data>
+  <data name="categories" xml:space="preserve"><value>ប្រភេទ</value></data>
+  <data name="to explore" xml:space="preserve"><value>ឱ្យរុករក</value></data>
+  <data name="Out of stock" xml:space="preserve"><value>អស់ស្តុក</value></data>
+  <data name="Sold out" xml:space="preserve"><value>លក់អស់</value></data>
+  <data name="Add to cart" xml:space="preserve"><value>ដាក់ចូលរទេះ</value></data>
+  <data name="All books" xml:space="preserve"><value>សៀវភៅទាំងអស់</value></data>
+  <data name="Search" xml:space="preserve"><value>ស្វែងរក</value></data>
+  <data name="Category" xml:space="preserve"><value>ប្រភេទ</value></data>
+  <data name="All" xml:space="preserve"><value>ទាំងអស់</value></data>
+  <data name="Sort By" xml:space="preserve"><value>តម្រៀបតាម</value></data>
+  <data name="Newest" xml:space="preserve"><value>ថ្មីបំផុត</value></data>
+  <data name="Price: Low to High" xml:space="preserve"><value>តម្លៃ៖ ពីទាបទៅខ្ពស់</value></data>
+  <data name="Price: High to Low" xml:space="preserve"><value>តម្លៃ៖ ពីខ្ពស់ទៅទាប</value></data>
+  <data name="Title A-Z" xml:space="preserve"><value>ចំណងជើង ក-អ</value></data>
+  <data name="Filter" xml:space="preserve"><value>ត្រង</value></data>
+  <data name="No books found." xml:space="preserve"><value>រកមិនឃើញសៀវភៅទេ។</value></data>
+  <data name="by" xml:space="preserve"><value>ដោយ</value></data>
+  <data name="Publisher" xml:space="preserve"><value>អ្នកបោះពុម្ពផ្សាយ</value></data>
+  <data name="In stock" xml:space="preserve"><value>មានស្តុក</value></data>
+  <data name="Quantity" xml:space="preserve"><value>ចំនួន</value></data>
+  <data name="Description" xml:space="preserve"><value>ការពិពណ៌នា</value></data>
+  <data name="Reviews" xml:space="preserve"><value>ការពិនិត្យ</value></data>
+  <data name="Average" xml:space="preserve"><value>មធ្យម</value></data>
+  <data name="No reviews yet." xml:space="preserve"><value>មិនទាន់មានការពិនិត្យនៅឡើយទេ។</value></data>
+  <data name="Write a review" xml:space="preserve"><value>សរសេរពិនិត្យ</value></data>
+  <data name="Rating" xml:space="preserve"><value>ការវាយតម្លៃ</value></data>
+  <data name="Comment" xml:space="preserve"><value>មតិយោបល់</value></data>
+  <data name="Submit" xml:space="preserve"><value>ដាក់ស្នើ</value></data>
+  <data name="You may also like" xml:space="preserve"><value>អ្នកប្រហែលជាចូលចិត្តផងដែរ</value></data>
+  <data name="Your cart is empty" xml:space="preserve"><value>រទេះរបស់អ្នកទទេ</value></data>
+  <data name="Browse our books and find something you love." xml:space="preserve"><value>រកមើលសៀវភៅរបស់យើង ហើយជ្រើសរើសអ្វីដែលអ្នកចូលចិត្ត។</value></data>
+  <data name="Start shopping" xml:space="preserve"><value>ចាប់ផ្ដើមទិញទំនិញ</value></data>
+  <data name="Shopping cart" xml:space="preserve"><value>រទេះទំនិញ</value></data>
+  <data name="Continue shopping" xml:space="preserve"><value>បន្តទិញទំនិញ</value></data>
+  <data name="Only {0} left in stock" xml:space="preserve"><value>នៅសល់តែ {0} ក្នុងស្តុក</value></data>
+  <data name="Clear cart" xml:space="preserve"><value>លុបរទេះទាំងអស់</value></data>
+  <data name="Remove" xml:space="preserve"><value>លុប</value></data>
+  <data name="Order summary" xml:space="preserve"><value>សេចក្ដីសង្ខេបការបញ្ជាទិញ</value></data>
+  <data name="Items" xml:space="preserve"><value>ទំនិញ</value></data>
+  <data name="Subtotal" xml:space="preserve"><value>សរុបរង</value></data>
+  <data name="Shipping" xml:space="preserve"><value>ការដឹកជញ្ជូន</value></data>
+  <data name="Calculated at checkout" xml:space="preserve"><value>គណនានៅពេលបង់ប្រាក់</value></data>
+  <data name="Total" xml:space="preserve"><value>សរុប</value></data>
+  <data name="Add {0} more for free delivery" xml:space="preserve"><value>បន្ថែម {0} ទៀតដើម្បីដឹកជញ្ជូនឥតគិតថ្លៃ</value></data>
+  <data name="You got free delivery!" xml:space="preserve"><value>អ្នកបានដឹកជញ្ជូនឥតគិតថ្លៃ!</value></data>
+  <data name="Proceed to checkout" xml:space="preserve"><value>បន្តទៅបង់ប្រាក់</value></data>
+  <data name="Secure payment" xml:space="preserve"><value>ការបង់ប្រាក់សុវត្ថិភាព</value></data>
+  <data name="Easy returns" xml:space="preserve"><value>ត្រឡប់ទំនិញងាយស្រួល</value></data>
+  <data name="Checkout" xml:space="preserve"><value>បង់ប្រាក់</value></data>
+  <data name="Complete" xml:space="preserve"><value>រួចរាល់</value></data>
+  <data name="Delivery information" xml:space="preserve"><value>ព័ត៌មានដឹកជញ្ជូន</value></data>
+  <data name="Full name" xml:space="preserve"><value>ឈ្មោះពេញ</value></data>
+  <data name="Phone" xml:space="preserve"><value>លេខទូរស័ព្ទ</value></data>
+  <data name="Address" xml:space="preserve"><value>អាសយដ្ឋាន</value></data>
+  <data name="Note (optional)" xml:space="preserve"><value>កំណត់សម្គាល់ (ស្រេចចិត្ត)</value></data>
+  <data name="Shipping method" xml:space="preserve"><value>វិធីដឹកជញ្ជូន</value></data>
+  <data name="About {0} days" xml:space="preserve"><value>ប្រហែល {0} ថ្ងៃ</value></data>
+  <data name="Free" xml:space="preserve"><value>ឥតគិតថ្លៃ</value></data>
+  <data name="Payment method" xml:space="preserve"><value>វិធីបង់ប្រាក់</value></data>
+  <data name="Pay when you receive your books" xml:space="preserve"><value>បង់នៅពេលទទួលសៀវភៅ</value></data>
+  <data name="Place order" xml:space="preserve"><value>ដាក់ការបញ្ជាទិញ</value></data>
+  <data name="Placing order..." xml:space="preserve"><value>កំពុងដាក់ការបញ្ជាទិញ...</value></data>
+  <data name="Back to cart" xml:space="preserve"><value>ត្រឡប់ទៅរទេះ</value></data>
+  <data name="Thank you for your order!" xml:space="preserve"><value>អរគុណសម្រាប់ការបញ្ជាទិញរបស់អ្នក!</value></data>
+  <data name="Your order has been placed successfully. We will start packing your books right away." xml:space="preserve"><value>ការបញ្ជាទិញរបស់អ្នកត្រូវបានដាក់ដោយជោគជ័យ។ យើងខ្ញុំនឹងចាប់ផ្ដើមខ្ចប់សៀវភៅភ្លាមៗ។</value></data>
+  <data name="Order number" xml:space="preserve"><value>លេខការបញ្ជាទិញ</value></data>
+  <data name="Date" xml:space="preserve"><value>កាលបរិច្ឆេទ</value></data>
+  <data name="Payment" xml:space="preserve"><value>ការបង់ប្រាក់</value></data>
+  <data name="Delivery to" xml:space="preserve"><value>ដឹកជញ្ជូនទៅ</value></data>
+  <data name="View my order" xml:space="preserve"><value>មើលការបញ្ជាទិញរបស់ខ្ញុំ</value></data>
+  <data name="Pending" xml:space="preserve"><value>រង់ចាំ</value></data>
+  <data name="Processing" xml:space="preserve"><value>កំពុងដំណើរការ</value></data>
+  <data name="Shipped" xml:space="preserve"><value>កំពុងដឹកជញ្ជូន</value></data>
+  <data name="Delivered" xml:space="preserve"><value>ដឹកជញ្ជូនរួច</value></data>
+  <data name="Cancelled" xml:space="preserve"><value>បានលុបចោល</value></data>
+  <data name="You have no orders yet." xml:space="preserve"><value>អ្នកមិនទាន់មានការបញ្ជាទិញនៅឡើយទេ។</value></data>
+  <data name="Back to orders" xml:space="preserve"><value>ត្រឡប់ទៅការបញ្ជាទិញ</value></data>
+  <data name="Order" xml:space="preserve"><value>ការបញ្ជាទិញ</value></data>
+  <data name="This order was cancelled." xml:space="preserve"><value>ការបញ្ជាទិញនេះត្រូវបានលុបចោល។</value></data>
+  <data name="Summary" xml:space="preserve"><value>សេចក្ដីសង្ខេប</value></data>
+  <data name="Discount" xml:space="preserve"><value>បញ្ចុះតម្លៃ</value></data>
+  <data name="Tax" xml:space="preserve"><value>ពន្ធ</value></data>
+  <data name="Delivery &amp; payment" xml:space="preserve"><value>ការដឹកជញ្ជូន និងការបង់ប្រាក់</value></data>
+  <data name="Print invoice" xml:space="preserve"><value>បោះពុម្ពវិក្កយបត្រ</value></data>
+  <data name="Cancel order" xml:space="preserve"><value>លុបចោលការបញ្ជាទិញ</value></data>
+  <data name="Cancel this order?" xml:space="preserve"><value>លុបចោលការបញ្ជាទិញនេះ?</value></data>
+  <data name="Login" xml:space="preserve"><value>ចូលគណនី</value></data>
+  <data name="Email" xml:space="preserve"><value>អ៊ីមែល</value></data>
+  <data name="Password" xml:space="preserve"><value>ពាក្យសម្ងាត់</value></data>
+  <data name="Remember me" xml:space="preserve"><value>ចងចាំខ្ញុំ</value></data>
+  <data name="Don't have an account?" xml:space="preserve"><value>មិនទាន់មានគណនីមែនទេ?</value></data>
+  <data name="Register" xml:space="preserve"><value>ចុះឈ្មោះ</value></data>
+  <data name="First name" xml:space="preserve"><value>នាមខ្លួន</value></data>
+  <data name="Last name" xml:space="preserve"><value>នាមត្រកូល</value></data>
+  <data name="Confirm password" xml:space="preserve"><value>បញ្ជាក់ពាក្យសម្ងាត់</value></data>
+  <data name="Already have an account?" xml:space="preserve"><value>មានគណនីរួចហើយមែនទេ?</value></data>
+  <data name="Get in" xml:space="preserve"><value>ទាក់ទង</value></data>
+  <data name="touch" xml:space="preserve"><value>មកយើង</value></data>
+  <data name="We'd love to hear from you." xml:space="preserve"><value>យើងខ្ញុំរីករាយនឹងឮពីអ្នក។</value></data>
+  <data name="Subject" xml:space="preserve"><value>ប្រធានបទ</value></data>
+  <data name="Message" xml:space="preserve"><value>សារ</value></data>
+  <data name="Send message" xml:space="preserve"><value>ផ្ញើសារ</value></data>
+  <data name="Get in touch" xml:space="preserve"><value>ទាក់ទងមកយើង</value></data>
+  <data name="Mon - Fri, 9:00 AM - 6:00 PM" xml:space="preserve"><value>ច័ន្ទ - សុក្រ, 9:00 ព្រឹក - 6:00 ល្ងាច</value></data>
+  <data name="About us" xml:space="preserve"><value>អំពីយើង</value></data>
+  <data name="Your trusted online bookstore in Cambodia." xml:space="preserve"><value>ហាងសៀវភៅអនឡាញដែលអ្នកទុកចិត្តក្នុងប្រទេសកម្ពុជា។</value></data>
+  <data name="Our story" xml:space="preserve"><value>រឿងរ៉ាវរបស់យើង</value></data>
+  <data name="BookNest is a Cambodian online bookstore built to make quality books more accessible across the country. We connect readers with a wide range of titles that inform, inspire, and entertain." xml:space="preserve"><value>BookNest គឺជាហាងសៀវភៅអនឡាញកម្ពុជាដែលបង្កើតឡើងដើម្បីឱ្យសៀវភៅគុណភាពល្អងាយរកទូទាំងប្រទេស។ យើងភ្ជាប់អ្នកអានទៅនឹងសៀវភៅជាច្រើនដែលផ្ដល់ចំណេញដឹង បំផុសគំនិត និងកម្សាន្ត។</value></data>
+  <data name="From Phnom Penh to the provinces, we aim to deliver great reading experiences with fair prices and fast, reliable service." xml:space="preserve"><value>ពីភ្នំពេញដល់ខេត្ត យើងខ្ញុំខិតខំផ្ដល់បទពិសោធន៍អានដ៏ល្អ ជាមួយតម្លៃសមរម្យ និងសេវាកម្មលឿនទៀបភាព។</value></data>
+  <data name="Wide selection" xml:space="preserve"><value>ជម្រើសច្រើន</value></data>
+  <data name="Curated books across many categories." xml:space="preserve"><value>សៀវភៅជ្រើសរើសគុណភាពគ្រប់ប្រភេទ។</value></data>
+  <data name="Fair prices" xml:space="preserve"><value>តម្លៃសមរម្យ</value></data>
+  <data name="Quality books at prices that fit your budget." xml:space="preserve"><value>សៀវភៅគុណភាពល្អក្នុងតម្លៃសមរម្យនឹងថវិការបស់អ្នក។</value></data>
+  <data name="Fast delivery" xml:space="preserve"><value>ដឹកជញ្ជូនលឿន</value></data>
+  <data name="Speedy delivery to your door across Cambodia." xml:space="preserve"><value>ដឹកជញ្ជូនលឿនទៅដល់ផ្ទះអ្នកទូទាំងប្រទេសកម្ពុជា។</value></data>
+  <data name="Welcome back" xml:space="preserve"><value>សូមស្វាគមន៍ពេលត្រឡប់មកវិញ</value></data>
+  <data name="Sign in to keep exploring books and track your orders." xml:space="preserve"><value>ចូលគណនីដើម្បីបន្តរុករកសៀវភៅ និងតាមដានការបញ្ជាទិញរបស់អ្នក។</value></data>
+  <data name="Browse books in Khmer and English" xml:space="preserve"><value>រកមើលសៀវភៅជាភាសាខ្មែរ និងអង់គ្លេស</value></data>
+  <data name="Track your orders" xml:space="preserve"><value>តាមដានការបញ្ជាទិញរបស់អ្នក</value></data>
+  <data name="Faster checkout" xml:space="preserve"><value>បង់ប្រាក់បានលឿន</value></data>
+  <data name="Enter your email and password to continue." xml:space="preserve"><value>បញ្ចូលអ៊ីមែល និងពាក្យសម្ងាត់របស់អ្នកដើម្បីបន្ត។</value></data>
+  <data name="Fill in your details to create your account." xml:space="preserve"><value>បំពេញព័ត៌មានរបស់អ្នកដើម្បីបង្កើតគណនី។</value></data>
+  <data name="Join Book Cambodia" xml:space="preserve"><value>ចូលរួម Book Cambodia</value></data>
+  <data name="Create an account to order books and follow your deliveries." xml:space="preserve"><value>បង្កើតគណនីដើម្បីបញ្ជាទិញសៀវភៅ និងតាមដានការដឹកជញ្ជូនរបស់អ្នក។</value></data>
+</root>

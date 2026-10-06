@@ -7,16 +7,17 @@ namespace E_Commerce.Models
         [Key]
         public int ContactId { get; set; }
 
-        [MaxLength(150)]
-        public string FullName { get; set; }
+        [Required, StringLength(150)]
+        public string FullName { get; set; } = string.Empty;
 
-        [MaxLength(150)]
-        public string Email { get; set; }
+        [Required, StringLength(150)]
+        public string Email { get; set; } = string.Empty;
 
-        [MaxLength(200)]
-        public string Subject { get; set; }
+        [Required, StringLength(200)]
+        public string Subject { get; set; } = string.Empty;
 
-        public string Message { get; set; }
+        [Required]
+        public string Message { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }

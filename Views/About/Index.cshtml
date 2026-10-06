@@ -1,0 +1,76 @@
+﻿@using Microsoft.Extensions.Localization
+@using E_Commerce
+@inject IStringLocalizer<SharedResource> L
+@{
+    ViewData["Title"] = "About BookNest";
+}
+
+<div class="container py-4">
+    <div class="mb-4">
+        <div class="sec-head">
+            <span class="sec-eyebrow">@L["About us"]</span>
+            <h1 class="sec-title">@L["About"] <span class="hl">Book Cambodia</span></h1>
+        </div>
+        <p class="text-muted">@L["Your trusted online bookstore in Cambodia."]</p>
+    </div>
+
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-8">
+            <h2 class="h4 mb-3">@L["Our story"]</h2>
+            <p>@L["BookCambodia is a Cambodian online bookstore built to make quality books more accessible across the country. We connect readers with a wide range of titles that inform, inspire, and entertain."]</p>
+            <p>@L["From Phnom Penh to the provinces, we aim to deliver great reading experiences with fair prices and fast, reliable service."]</p>
+        </div>
+        <div class="col-md-4 text-center">
+            <img src="~/images/placeholder-book.png" alt="Book" class="img-fluid" style="max-height: 200px; border-radius: 14px;">
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-book-half fs-1" style="color: var(--g);"></i>
+                    <h5 class="mt-3">@L["Wide selection"]</h5>
+                    <p class="text-muted mb-0">@L["Curated books across many categories."]</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-cash-coin fs-1" style="color: var(--g);"></i>
+                    <h5 class="mt-3">@L["Fair prices"]</h5>
+                    <p class="text-muted mb-0">@L["Quality books at prices that fit your budget."]</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-truck fs-1" style="color: var(--g);"></i>
+                    <h5 class="mt-3">@L["Fast delivery"]</h5>
+                    <p class="text-muted mb-0">@L["Speedy delivery to your door across Cambodia."]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4 text-center">
+        <div class="col-md-4">
+            <h3 class="fw-bold">1,000+</h3>
+            <p class="text-muted">@L["Books"]</p>
+        </div>
+        <div class="col-md-4">
+            <h3 class="fw-bold">500+</h3>
+            <p class="text-muted">@L["readers"]</p>
+        </div>
+        <div class="col-md-4">
+            <h3 class="fw-bold">6 @L["categories"]</h3>
+            <p class="text-muted">@L["to explore"]</p>
+        </div>
+    </div>
+
+    <div class="text-center py-3">
+        <a class="btn btn-accent" asp-controller="Books" asp-action="Index">@L["Browse Books"]</a>
+    </div>
+</div>

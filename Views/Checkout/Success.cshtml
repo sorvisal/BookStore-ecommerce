@@ -1,0 +1,42 @@
+﻿@using Microsoft.Extensions.Localization
+@using E_Commerce
+@inject IStringLocalizer<SharedResource> L
+@model Order
+@{
+    ViewData["Title"] = "Order placed";
+}
+<link rel="stylesheet" href="~/css/checkout.css" asp-append-version="true" />
+
+<div class="container py-5 co-page">
+    <div class="co-success">
+        <div class="co-check"><i class="bi bi-check-lg"></i></div>
+        <h2>@L["Thank you for your order!"]</h2>
+        <p class="text-muted">@L["Your order has been placed successfully. We will start packing your books right away."]</p>
+
+        <div class="co-success-card">
+            <div class="co-row"><span>@L["Order number"]</span><b>@Model.OrderNumber</b></div>
+            <div class="co-row"><span>@L["Date"]</span><span>@Model.OrderDate.ToString("dd MMM yyyy, HH:mm")</span></div>
+            <div class="co-row"><span>@L["Payment"]</span><span>@Model.Payment?.PaymentMethod?.MethodName (@Model.Payment?.Status)</span></div>
+            <div class="co-row">
+                <span>@L["Delivery to"]</span>
+                <span class="text-end">@Model.ReceiverName &middot; @Model.Phone<br />@Model.ShippingAddress</span>
+            </div>
+            <div class="co-total"><span>@L["Total"]</span><span>$@Model.GrandTotal.GetValueOrDefault().ToString("N2")</span></div>
+        </div>
+
+        <div class="co-success-items">
+            @foreach (var d in Model.OrderDetails)
+            {
+                <div class="co-row">
+                    <span>@d.Book?.Title <span class="text-muted">&times; @d.Quantity</span></span>
+                    <span>$@d.Subtotal.GetValueOrDefault().ToString("N2")</span>
+                </div>
+            }
+        </div>
+
+        <div class="co-success-actions">
+            <a class="co-btn" asp-controller="Orders" asp-action="Details" asp-route-id="@Model.OrderId">@L["View my order"]</a>
+            <a class="co-btn-outline" asp-controller="Books" asp-action="Index">@L["Continue shopping"]</a>
+        </div>
+    </div>
+</div>

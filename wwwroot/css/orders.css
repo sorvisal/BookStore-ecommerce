@@ -1,0 +1,148 @@
+﻿.chip-o {
+    display: inline-block;
+    padding: .4rem 1rem;
+    border-radius: 50px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    margin: 0 .4rem .5rem 0;
+    font-size: .9rem;
+    color: var(--text);
+    text-decoration: none;
+    transition: .2s
+}
+
+    .chip-o:hover, .chip-o.on {
+        background: var(--g);
+        border-color: var(--g);
+        color: var(--on-g)
+    }
+
+.order-card {
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+    color: inherit;
+    text-decoration: none;
+    transition: .25s
+}
+
+    .order-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-hover);
+        color: inherit
+    }
+
+.thumb {
+    width: 44px;
+    height: 58px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: var(--bg-soft);
+    margin-right: 6px
+}
+
+.panel-o {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.4rem;
+    box-shadow: var(--shadow)
+}
+
+.st {
+    display: inline-block;
+    padding: .25rem .8rem;
+    border-radius: 50px;
+    font-size: .78rem;
+    font-weight: 600
+}
+
+.st-Pending {
+    background: #fef3c7;
+    color: #92400e
+}
+
+.st-Processing {
+    background: #dbeafe;
+    color: #1e40af
+}
+
+.st-Shipped {
+    background: #e0e7ff;
+    color: #3730a3
+}
+
+.st-Delivered {
+    background: #dcfce7;
+    color: #166534
+}
+
+.st-Cancelled {
+    background: #fee2e2;
+    color: #991b1b
+}
+
+.steps {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: .5rem 0
+}
+
+    .steps:before {
+        content: "";
+        position: absolute;
+        top: 19px;
+        left: 12%;
+        right: 12%;
+        height: 3px;
+        background: var(--border)
+    }
+
+.step {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    color: var(--muted);
+    font-size: .85rem
+}
+
+    .step i {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        margin: 0 auto 6px;
+        border-radius: 50%;
+        background: var(--border);
+        font-size: 1.1rem
+    }
+
+    .step.done {
+        color: var(--text);
+        font-weight: 600
+    }
+
+        .step.done i {
+            background: var(--g);
+            color: var(--on-g)
+        }
+
+@media print {
+    nav, footer, .no-print, .toast-container {
+        display: none !important
+    }
+
+    body {
+        background: #fff
+    }
+
+    .panel-o {
+        box-shadow: none;
+        border: 1px solid #ddd
+    }
+}

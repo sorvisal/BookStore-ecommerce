@@ -1,0 +1,420 @@
+/* Book Cambodia storefront navbar (FluxiBiz-style) */
+
+.nb {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    transition: box-shadow .2s;
+}
+
+    .nb.scrolled {
+        box-shadow: var(--shadow);
+    }
+
+/* logo | menu (takes the free space, centered) | actions (as wide as needed) */
+.nb-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    column-gap: 1rem;
+    padding-top: .6rem;
+    padding-bottom: .6rem;
+}
+
+/* ---- Logo ---- */
+.nb-brand {
+    display: flex;
+    align-items: center;
+    justify-self: start;
+}
+
+    .nb-brand .brand-logo {
+        width: 190px; /* change this number to resize the logo */
+        height: auto;
+        max-width: 100%;
+        margin: -12px 0; /* trims the empty space inside the PNG */
+        object-fit: contain;
+    }
+
+/* ---- Menu ---- */
+.nb-menu {
+    justify-self: center;
+}
+
+    .nb-menu ul {
+        display: flex;
+        gap: .4rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+.nb-link {
+    position: relative;
+    display: block;
+    padding: .55rem 1.05rem;
+    color: var(--text);
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 50px;
+    white-space: nowrap;
+    transition: .2s;
+}
+
+    .nb-link:hover {
+        color: var(--g);
+        background: var(--bg-soft);
+    }
+
+    .nb-link.active {
+        color: var(--g);
+        font-weight: 700;
+    }
+
+        .nb-link.active:after {
+            content: "";
+            position: absolute;
+            left: 1.05rem;
+            right: 1.05rem;
+            bottom: 2px;
+            height: 3px;
+            border-radius: 3px;
+            background: var(--g);
+        }
+
+/* ---- Right side actions ---- */
+.nb-actions {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    justify-self: end;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+    .nb-actions > * {
+        flex-shrink: 0;
+    }
+
+.nb-icon {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 1.25rem;
+    text-decoration: none;
+    transition: .2s;
+    cursor: pointer;
+}
+
+    .nb-icon:hover {
+        background: var(--bg-soft);
+        color: var(--g);
+    }
+
+    .nb-icon .badge {
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        min-width: 19px;
+        height: 19px;
+        padding: 0 5px;
+        border-radius: 50px;
+        display: grid;
+        place-items: center;
+        background: var(--gy);
+        color: #0b1410;
+        font-size: .68rem;
+        font-weight: 800;
+        border: 2px solid var(--surface);
+    }
+
+/* ---- Log In / Sign up (one line, same height) ---- */
+.nb-login,
+.nb-signup {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    line-height: 1.2;
+    padding: .5rem 1.3rem;
+    border: 1px solid var(--g);
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: .2s;
+}
+
+.nb-login {
+    background: var(--g);
+    color: var(--on-g);
+    box-shadow: 0 8px 20px rgba(18, 146, 58, .25);
+}
+
+    .nb-login:hover {
+        background: var(--g-d);
+        border-color: var(--g-d);
+        color: var(--on-g);
+        transform: translateY(-2px);
+    }
+
+.nb-signup {
+    background: transparent;
+    color: var(--g);
+}
+
+    .nb-signup:hover {
+        background: var(--g);
+        color: var(--on-g);
+    }
+
+/* ---- Signed-in user ---- */
+.nb-user {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: .2rem .8rem .2rem .2rem;
+    color: var(--text);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+    .nb-user:hover {
+        border-color: var(--g);
+        color: var(--text);
+    }
+
+.nb-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--g), var(--g-d));
+    color: #fff;
+    font-size: .82rem;
+    font-weight: 600;
+    display: grid;
+    place-items: center;
+}
+
+.nb .dropdown-menu {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: .5rem;
+    box-shadow: var(--shadow);
+    min-width: 210px;
+    margin-top: .7rem !important;
+}
+
+.nb .dropdown-item {
+    border-radius: 9px;
+    padding: .55rem .8rem;
+}
+
+    .nb .dropdown-item i {
+        width: 22px;
+        color: var(--g);
+    }
+
+    .nb .dropdown-item:hover {
+        background: var(--bg-soft);
+    }
+
+/* ---- Language switcher ---- */
+.nb-lang-btn {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: .45rem .7rem;
+    color: var(--text);
+    cursor: pointer;
+    transition: .2s;
+}
+
+    .nb-lang-btn:hover {
+        border-color: var(--g);
+    }
+
+    .nb-lang-btn img {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .nb-lang-btn i {
+        font-size: .8rem;
+        color: var(--muted);
+    }
+
+.nb-lang-menu {
+    min-width: 170px;
+}
+
+    .nb-lang-menu form {
+        margin: 0;
+    }
+
+    .nb-lang-menu .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: .6rem;
+        width: 100%;
+        background: none;
+        border: 0;
+        text-align: left;
+    }
+
+        .nb-lang-menu .dropdown-item img {
+            width: 24px;
+            height: 18px;
+            border-radius: 3px;
+            object-fit: cover;
+        }
+
+        .nb-lang-menu .dropdown-item .nb-lang-check {
+            margin-left: auto;
+            color: var(--g);
+            font-size: 1rem;
+        }
+
+.nb-toggler {
+    display: none;
+}
+
+/* ---- Search bar ---- */
+.nb-searchbar {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .3s;
+}
+
+    .nb-searchbar.open {
+        max-height: 90px;
+    }
+
+    .nb-searchbar form {
+        position: relative;
+        max-width: 620px;
+        margin: 0 auto;
+        padding: .2rem 0 .9rem;
+    }
+
+    .nb-searchbar i {
+        position: absolute;
+        left: 16px;
+        top: 36%;
+        transform: translateY(-50%);
+        color: var(--g);
+    }
+
+    .nb-searchbar input {
+        width: 100%;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+        border-radius: 50px;
+        padding: .6rem 1rem .6rem 2.8rem;
+        outline: 0;
+    }
+
+        .nb-searchbar input:focus {
+            border-color: var(--g);
+            box-shadow: 0 0 0 3px rgba(18, 146, 58, .18);
+        }
+
+/* ---- Desktop ---- */
+@media (min-width: 992px) {
+    .nb-menu {
+        display: block !important;
+    }
+}
+
+/* Narrow desktop (992-1199px): the container is only 960px, so tighten up */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .nb-brand .brand-logo {
+        width: 150px;
+    }
+
+    .nb-link {
+        padding: .5rem .75rem;
+    }
+
+        .nb-link.active:after {
+            left: .75rem;
+            right: .75rem;
+        }
+
+    .nb-signup {
+        display: none;
+    }
+}
+
+/* ---- Tablet / mobile ---- */
+@media (max-width: 991px) {
+    .nb-row {
+        grid-template-columns: auto 1fr;
+        grid-template-areas: "brand actions" "menu menu";
+    }
+
+    .nb-brand {
+        grid-area: brand;
+    }
+
+    .nb-actions {
+        grid-area: actions;
+    }
+
+    .nb-menu {
+        grid-area: menu;
+        justify-self: stretch;
+    }
+
+        .nb-menu:not(.show) {
+            display: none;
+        }
+
+        .nb-menu ul {
+            flex-direction: column;
+            padding: .6rem 0;
+        }
+
+    .nb-link.active:after {
+        display: none;
+    }
+
+    .nb-link.active {
+        background: var(--bg-soft);
+    }
+
+    .nb-toggler {
+        display: grid;
+    }
+
+    .nb-login {
+        padding: .45rem 1.1rem;
+        font-size: .9rem;
+    }
+
+    .nb-signup {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .nb-brand .brand-logo {
+        width: 140px;
+    }
+}

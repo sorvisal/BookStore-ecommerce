@@ -1,37 +1,115 @@
-﻿<nav class="navbar navbar-expand-lg bg-white shadow-sm">
-    <div class="container">
-        <div class="collapse navbar-collapse" id="navbarContent">
-            <!-- ប្រើ mx-auto នៅទីនេះគឺគ្រប់គ្រាន់ហើយ -->
-            <ul class="navbar-nav mx-auto">
-                <li class="nav-item">
-                    <a class="nav-link fw-bold" asp-controller="Home" asp-action="Index">ទំព័រដើម</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle fw-bold" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        ប្រភេទសៀវភៅ
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" asp-controller="Category" asp-action="Index">All Categories</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <!-- បន្ថែមបញ្ជី Category ផ្សេងទៀតរបស់អ្នកនៅទីនេះ -->
-                        <li><a class="dropdown-item" href="#">Novels</a></li>
-                        <li><a class="dropdown-item" href="#">Technology</a></li>
-                        <li><a class="dropdown-item" href="#">History</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-bold" asp-controller="Publisher" asp-action="Index">គ្រឹះស្ថានបោះពុម្ភ</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-bold" asp-controller="AllBook" asp-action="Index">សៀវភៅទាំងអស់</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-bold" asp-controller="About" asp-action="Index">អំពីយើង</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-bold" asp-controller="Contect" asp-action="Index">ទំនាក់ទំនង</a>
-                </li>
+﻿@using Microsoft.Extensions.Localization
+@using E_Commerce
+@inject IStringLocalizer<SharedResource> L
+@{
+    var ctrl = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    string Active(string c) => string.Equals(ctrl, c, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+    var fullName = User.Identity?.Name ?? "";
+    var parts = fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+    var initials = string.Concat(parts.Take(2).Select(p => char.ToUpper(p[0])));
+    var first = parts.FirstOrDefault() ?? "";
+    var isKm = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "km";
+    var returnUrl = Context.Request.Path + Context.Request.QueryString.Value;
+    var searchPlaceholder = L["Search books or authors..."].Value;
+}
+<link rel="stylesheet" href="~/css/navbar.css" asp-append-version="true" />
+
+<header class="nb" id="nb">
+    <div class="container nb-row">
+        <a class="nb-brand" asp-controller="Home" asp-action="Index" aria-label="Book Cambodia">
+            <partial name="_BrandLogo" />
+        </a>
+
+        <nav class="nb-menu collapse navbar-collapse" id="nbMenu">
+            <ul>
+                <li><a class="nb-link @Active("Home")" asp-controller="Home" asp-action="Index">@L["Home"]</a></li>
+                <li><a class="nb-link @Active("Books")" asp-controller="Books" asp-action="Index">@L["Books"]</a></li>
+                <li><a class="nb-link @Active("Contact")" asp-controller="Contact" asp-action="Index">@L["Contact"]</a></li>
+                <li><a class="nb-link @Active("About")" asp-controller="About" asp-action="Index">@L["About"]</a></li>
             </ul>
+        </nav>
+
+        <div class="nb-actions">
+            <button type="button" class="nb-icon" id="nbSearchBtn" aria-label="Search"><i class="bi bi-search"></i></button>
+            <button type="button" class="nb-icon" id="nbThemeToggle" aria-label="Toggle dark mode"><i class="bi bi-moon-stars"></i></button>
+
+            <div class="dropdown">
+                <button type="button" class="nb-lang-btn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Language">
+                    <img src="https://flagcdn.com/w40/@(isKm ? "kh" : "gb").png" alt="@(isKm ? "Khmer" : "English")" />
+                    <i class="bi bi-chevron-down"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end nb-lang-menu">
+                    <li>
+                        <form asp-controller="Language" asp-action="Set" method="post">
+                            <input type="hidden" name="culture" value="en" />
+                            <input type="hidden" name="returnUrl" value="@returnUrl" />
+                            <button type="submit" class="dropdown-item">
+                                <img src="https://flagcdn.com/w40/gb.png" alt="" /> English
+                                @if (!isKm)
+                                {
+                                    <i class="bi bi-check-lg nb-lang-check"></i>
+                                }
+                            </button>
+                        </form>
+                    </li>
+                    <li>
+                        <form asp-controller="Language" asp-action="Set" method="post">
+                            <input type="hidden" name="culture" value="km" />
+                            <input type="hidden" name="returnUrl" value="@returnUrl" />
+                            <button type="submit" class="dropdown-item">
+                                <img src="https://flagcdn.com/w40/kh.png" alt="" /> ខ្មែរ (Khmer)
+                                @if (isKm)
+                                {
+                                    <i class="bi bi-check-lg nb-lang-check"></i>
+                                }
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+
+            @await Component.InvokeAsync("CartSummary")
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <div class="dropdown">
+                    <a class="nb-user dropdown-toggle" data-bs-toggle="dropdown" role="button"><span class="nb-avatar">@initials</span><span class="d-none d-sm-inline">@first</span></a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li class="px-3 py-2 small text-muted">@L["Signed in as"]<br /><b class="text-dark">@fullName</b></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" asp-controller="Orders" asp-action="Index"><i class="bi bi-receipt"></i>@L["My orders"]</a></li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2"></i>@L["Dashboard"]</a></li>
+                        }
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><form asp-controller="Account" asp-action="Logout" method="post"><button class="dropdown-item text-danger"><i class="bi bi-box-arrow-right text-danger"></i>@L["Logout"]</button></form></li>
+                    </ul>
+                </div>
+            }
+            else
+            {
+                <a class="nb-icon" asp-controller="Account" asp-action="Login" aria-label="Account"><i class="bi bi-person"></i></a>
+                <a class="nb-login" asp-controller="Account" asp-action="Login">@L["Log In"]</a>
+                <a class="nb-signup" asp-controller="Account" asp-action="Register">@L["Sign up"]</a>
+            }
+            <button class="nb-icon nb-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nbMenu" aria-label="Menu"><i class="bi bi-list"></i></button>
         </div>
     </div>
-</nav>
+
+    <div class="nb-searchbar" id="nbSearch">
+        <div class="container">
+            <form asp-controller="Books" asp-action="Index" method="get">
+                <i class="bi bi-search"></i>
+                <input name="search" type="search" placeholder="@searchPlaceholder" />
+            </form>
+        </div>
+    </div>
+</header>
+<script>
+    (function () {
+      var n = document.getElementById('nb'), b = document.getElementById('nbSearchBtn'), s = document.getElementById('nbSearch');
+      function f() { n.classList.toggle('scrolled', window.scrollY > 8); } f();
+      window.addEventListener('scroll', f, { passive: true });
+      b.addEventListener('click', function () { s.classList.toggle('open'); if (s.classList.contains('open')) s.querySelector('input').focus(); });
+    })();
+</script>

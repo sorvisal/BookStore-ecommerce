@@ -1,0 +1,118 @@
+@{
+    var ctrl = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    string Active(string c) => string.Equals(ctrl, c, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Book Cambodia Admin</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Khmer font (loaded first so Khmer text always uses MiSans Khmer) -->
+    <link rel="preload" href="~/fonts/MiSansKhmer-Regular.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="~/fonts/MiSansKhmer-Bold.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="~/css/fonts.css" asp-append-version="true" />
+
+    <!-- Bootstrap 5 + Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+<body class="adm">
+    <aside class="adm-side">
+        <div class="adm-side-head">
+            <a class="adm-logo" asp-area="Admin" asp-controller="Dashboard" asp-action="Index" aria-label="Book Cambodia Admin">
+                <img src="~/images/logo/Book_Cambodia_Logo_4K.png" alt="Book Cambodia" />
+            </a>
+            <button type="button" class="adm-toggle" id="admToggle" aria-label="Collapse sidebar">
+                <i class="bi bi-layout-sidebar"></i>
+            </button>
+        </div>
+
+        <div class="adm-search">
+            <i class="bi bi-search"></i>
+            <input id="admSearch" type="search" placeholder="Search" autocomplete="off" aria-label="Search menu" />
+            <kbd>/</kbd>
+        </div>
+
+        <div class="adm-nav-label">Navigation</div>
+        <nav class="adm-nav" id="admNav">
+            <a class="@Active("Dashboard")" asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
+            <a class="@Active("Books")" asp-area="Admin" asp-controller="Books" asp-action="Index"><i class="bi bi-book"></i><span>Books</span></a>
+            <a class="@Active("Orders")" asp-area="Admin" asp-controller="Orders" asp-action="Index"><i class="bi bi-receipt"></i><span>Orders</span></a>
+            <a class="@Active("Categories")" asp-area="Admin" asp-controller="Categories" asp-action="Index"><i class="bi bi-tags"></i><span>Categories</span></a>
+            <a class="@Active("Authors")" asp-area="Admin" asp-controller="Authors" asp-action="Index"><i class="bi bi-person-lines-fill"></i><span>Authors</span></a>
+            <a class="@Active("Publishers")" asp-area="Admin" asp-controller="Publishers" asp-action="Index"><i class="bi bi-building"></i><span>Publishers</span></a>
+            <a class="@Active("Customers")" asp-area="Admin" asp-controller="Customers" asp-action="Index"><i class="bi bi-people"></i><span>Customers</span></a>
+            <a class="@Active("Messages")" asp-area="Admin" asp-controller="Messages" asp-action="Index"><i class="bi bi-envelope"></i><span>Messages</span></a>
+        </nav>
+
+        <div class="adm-side-foot">
+            <a asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-shop"></i><span>Back to store</span></a>
+        </div>
+    </aside>
+
+    <div class="adm-main">
+        <header class="adm-top">
+            <h1 class="adm-top-title">@ViewData["Title"]</h1>
+            <div class="adm-top-user"><i class="bi bi-person-circle"></i> @User.Identity?.Name</div>
+        </header>
+
+        <main class="adm-body">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle"></i> @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-circle"></i> @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script>
+        (function () {
+            var body = document.body, key = 'admSideCollapsed';
+            try { if (localStorage.getItem(key) === '1') body.classList.add('adm-collapsed'); } catch (e) {}
+
+            document.getElementById('admToggle').addEventListener('click', function () {
+                var c = body.classList.toggle('adm-collapsed');
+                try { localStorage.setItem(key, c ? '1' : '0'); } catch (e) {}
+            });
+
+            var s = document.getElementById('admSearch'),
+                links = document.querySelectorAll('#admNav a');
+            s.addEventListener('input', function () {
+                var q = s.value.trim().toLowerCase();
+                links.forEach(function (a) {
+                    a.style.display = a.textContent.toLowerCase().indexOf(q) > -1 ? '' : 'none';
+                });
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) {
+                    e.preventDefault();
+                    s.focus();
+                }
+            });
+        })();
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

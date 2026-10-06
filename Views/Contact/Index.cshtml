@@ -1,0 +1,78 @@
+﻿@using Microsoft.Extensions.Localization
+@using E_Commerce
+@inject IStringLocalizer<SharedResource> L
+@model E_Commerce.Models.Contact
+@{
+    ViewData["Title"] = "Contact";
+}
+
+<div class="container py-4">
+    <div class="sec-head">
+        <span class="sec-eyebrow">@L["Contact"]</span>
+        <h1 class="sec-title">@L["Get in"] <span class="hl">@L["touch"]</span></h1>
+    </div>
+    <p class="text-muted mb-4">@L["We'd love to hear from you."]</p>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["Success"]
+        </div>
+    }
+
+    <div class="row g-4">
+        <div class="col-md-7">
+            <div class="card">
+                <div class="card-body">
+                    <form asp-action="Index" method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="mb-3">
+                            <label asp-for="FullName" class="form-label">@L["Full name"]</label>
+                            <input asp-for="FullName" class="form-control" />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">@L["Email"]</label>
+                            <input asp-for="Email" class="form-control" type="email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Subject" class="form-label">@L["Subject"]</label>
+                            <input asp-for="Subject" class="form-control" />
+                            <span asp-validation-for="Subject" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Message" class="form-label">@L["Message"]</label>
+                            <textarea asp-for="Message" class="form-control" rows="5"></textarea>
+                            <span asp-validation-for="Message" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-accent">@L["Send message"]</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">@L["Get in touch"]</h5>
+                    <p class="mb-2"><i class="bi bi-geo-alt me-2" style="color: var(--g);"></i> Phnom Penh, Cambodia</p>
+                    <p class="mb-2"><i class="bi bi-envelope me-2" style="color: var(--g);"></i> admin@bookstore.com</p>
+                    <p class="mb-3"><i class="bi bi-clock me-2" style="color: var(--g);"></i> @L["Mon - Fri, 9:00 AM - 6:00 PM"]</p>
+
+                    <div class="ratio ratio-4x3 rounded overflow-hidden border flex-grow-1" style="min-height: 220px;">
+                        <iframe src="https://www.google.com/maps?q=Phnom+Penh,+Cambodia&output=embed"
+                                style="border:0;"
+                                allowfullscreen
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"
+                                title="@L["Our location"]">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,43 @@
+@model List<Author>
+@{
+    ViewData["Title"] = "Authors";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <span class="text-muted">@Model.Count authors</span>
+    <a class="btn-adm" asp-action="Create"><i class="bi bi-plus-lg"></i> New author</a>
+</div>
+
+<div class="adm-panel table-responsive">
+    <table class="table adm-table align-middle">
+        <thead>
+            <tr><th>Name</th><th>Country</th><th>Biography</th><th></th></tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr><td colspan="4" class="text-center text-muted py-4">No authors yet.</td></tr>
+            }
+            @foreach (var a in Model)
+            {
+                <tr>
+                    <td class="fw-semibold">@a.FullName</td>
+                    <td>@(a.Country ?? "-")</td>
+                    <td class="text-muted">
+                        @if (!string.IsNullOrWhiteSpace(a.Biography))
+                        {
+                            @(a.Biography.Length > 80 ? a.Biography.Substring(0, 80) + "…" : a.Biography)
+                        }
+                    </td>
+                    <td class="text-nowrap text-end">
+                        <a class="btn btn-sm btn-outline-success" asp-action="Edit" asp-route-id="@a.AuthorId"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="Delete" asp-route-id="@a.AuthorId" method="post" class="d-inline"
+                              onsubmit="return confirm('Delete this author?')">
+                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash3"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

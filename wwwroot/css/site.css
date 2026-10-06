@@ -1,40 +1,388 @@
-@font-face {
-    font-family: 'KhmerMisan';
-    src: url('../fonts/MiSansKhmer-Normal.ttf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-html {
-  font-size: 14px;
+/* Book Cambodia storefront — FluxiBiz-style clean theme */
+
+:root {
+  --bg: #ffffff;
+  --bg-soft: #f6f8f7;
+  --surface: #ffffff;
+  --text: #0b1410;
+  --muted: #5b6761;
+  --border: #e8ecea;
+  --shadow: 0 6px 24px rgba(16, 24, 20, .06);
+  --shadow-hover: 0 12px 32px rgba(16, 24, 20, .10);
+  --g: #12923a;
+  --g-d: #0b6b2a;
+  --gy: #adff2f;
+  --gy-soft: #eaffc4;
+  --on-g: #ffffff;
+  --radius: 18px;
+  --cf-overlay: rgba(255, 255, 255, .25);
+  /* legacy aliases so older inline styles keep working */
+  --ink: #0b1410;
+  --accent: #12923a;
+  --accent-d: #0b6b2a;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+html[data-theme="dark"] {
+  --bg: #0c1210;
+  --bg-soft: #111a16;
+  --surface: #151f1a;
+  --text: #e9f1ec;
+  --muted: #9fb0a6;
+  --border: #243229;
+  --shadow: 0 6px 24px rgba(0, 0, 0, .4);
+  --shadow-hover: 0 12px 32px rgba(0, 0, 0, .5);
+  --g: #2fc25b;
+  --g-d: #1f9e45;
+  --gy: #adff2f;
+  --gy-soft: #233528;
+  --on-g: #06130b;
+  --cf-overlay: rgba(0, 0, 0, .35);
+  /* legacy aliases */
+  --ink: #e9f1ec;
+  --accent: #2fc25b;
+  --accent-d: #1f9e45;
+  color-scheme: dark;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+html, body {
+  font-family: 'Plus Jakarta Sans', 'MiSans Khmer', system-ui, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
 }
 
-html {
+h1, h2, h3, h4, h5, h6 {
+  font-family: inherit;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+/* Khmer text inherits everywhere, including form controls and menus */
+button, input, select, textarea, optgroup,
+.nb-menu, .nb-actions, .dropdown-menu {
+  font-family: inherit;
+}
+
+a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--g-d);
+}
+
+.text-muted {
+  color: var(--muted) !important;
+}
+
+/* ---- Cards ---- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Book card title: room for two Khmer lines so nothing is clipped */
+.card .card-title {
+  line-height: 1.4;
+  min-height: 2.8em;
+}
+
+/* ---- Buttons ---- */
+.btn-accent,
+.btn-primary,
+.btn-success {
+  background-color: var(--g);
+  border: 1px solid var(--g);
+  color: var(--on-g);
+  border-radius: 999px;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(18, 146, 58, .25);
+  transition: .2s;
+}
+
+.btn-accent:hover,
+.btn-accent:focus,
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-success:hover,
+.btn-success:focus {
+  background-color: var(--g-d);
+  border-color: var(--g-d);
+  color: var(--on-g);
+}
+
+/* Secondary: white pill with a 1px border */
+.btn-soft {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 999px;
+  font-weight: 600;
+  transition: .2s;
+}
+
+.btn-soft:hover {
+  background: var(--surface);
+  border-color: var(--g);
+  color: var(--g);
+}
+
+.btn-outline-danger,
+.btn-outline-dark,
+.btn-outline-secondary {
+  border-radius: 999px;
+}
+
+/* ---- FluxiBiz section headings ---- */
+.sec-head {
+  margin-bottom: 1.4rem;
+}
+
+.sec-eyebrow {
+  display: inline-block;
+  font-size: .8rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--g);
+  margin-bottom: .35rem;
+}
+
+.sec-title {
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.sec-title .hl {
+  color: var(--g);
+}
+
+.sec-band {
+  background: var(--bg-soft);
+  border-radius: var(--radius);
+  padding: 1.6rem;
+}
+
+/* ---- Forms ---- */
+.form-control,
+.form-select {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background-color: var(--surface);
+  color: var(--text);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--g);
+  box-shadow: 0 0 0 3px rgba(18, 146, 58, .18);
+}
+
+/* ---- Dropdowns ---- */
+.dropdown-menu {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+
+.dropdown-item {
+  color: var(--text);
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background: var(--bg-soft);
+  color: var(--text);
+}
+
+.dropdown-divider {
+  border-color: var(--border);
+}
+
+/* ---- Status badges ---- */
+.status-badge-pending {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.status-badge-processing {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.status-badge-shipped {
+  background-color: #6366f1;
+  color: white;
+}
+
+.status-badge-delivered {
+  background-color: #22c55e;
+  color: white;
+}
+
+.status-badge-cancelled {
+  background-color: #ef4444;
+  color: white;
+}
+
+/* ---- Order utilities (also used by the Admin area via site.css) ---- */
+.chip-o {
+  display: inline-block;
+  padding: .4rem 1rem;
+  border-radius: 50px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  margin: 0 .4rem .5rem 0;
+  font-size: .9rem;
+  color: var(--text);
+  text-decoration: none;
+  transition: .2s;
+}
+
+.chip-o:hover, .chip-o.on {
+  background: var(--g);
+  border-color: var(--g);
+  color: var(--on-g);
+}
+
+.order-card {
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+  color: inherit;
+  text-decoration: none;
+  transition: .25s;
+}
+
+.order-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+  color: inherit;
+}
+
+.thumb {
+  width: 44px;
+  height: 58px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: var(--bg-soft);
+  margin-right: 6px;
+}
+
+.panel-o {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.4rem;
+  box-shadow: var(--shadow);
+}
+
+.st {
+  display: inline-block;
+  padding: .25rem .8rem;
+  border-radius: 50px;
+  font-size: .78rem;
+  font-weight: 600;
+}
+
+.st-Pending { background: #fef3c7; color: #92400e; }
+.st-Processing { background: #dbeafe; color: #1e40af; }
+.st-Shipped { background: #e0e7ff; color: #3730a3; }
+.st-Delivered { background: #dcfce7; color: #166534; }
+.st-Cancelled { background: #fee2e2; color: #991b1b; }
+
+.steps {
+  display: flex;
+  justify-content: space-between;
   position: relative;
-  min-height: 100%;
+  margin: .5rem 0;
 }
 
-body {
-    margin-bottom: 60px;
-    font-family: 'KhmerMisan', sans-serif;
+.steps:before {
+  content: "";
+  position: absolute;
+  top: 19px;
+  left: 12%;
+  right: 12%;
+  height: 3px;
+  background: var(--border);
 }
-.khmer-font {
-    font-family: 'KhmerMisan', sans-serif;
+
+.step {
+  flex: 1;
+  text-align: center;
+  position: relative;
+  color: var(--muted);
+  font-size: .85rem;
 }
-.custom-width {
-    max-width: 1000px; /* ???????????????????????? */
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 15px;
-    padding-right: 15px;
+
+.step i {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 6px;
+  border-radius: 50%;
+  background: var(--border);
+  font-size: 1.1rem;
+}
+
+.step.done {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.step.done i {
+  background: var(--g);
+  color: var(--on-g);
+}
+
+/* ---- Brand logo (light/dark variants, no flash: data-theme is set before CSS loads) ---- */
+.brand-logo {
+  display: inline-block;
+  transition: opacity .2s;
+}
+
+.brand-logo-dark {
+  display: none;
+}
+
+html[data-theme="dark"] .brand-logo-light {
+  display: none;
+}
+
+html[data-theme="dark"] .brand-logo-dark {
+  display: inline-block;
+}
+
+/* ---- Misc ---- */
+.book-img {
+  height: 200px;
+  width: 100%;
+  object-fit: cover;
+  border-radius: calc(var(--radius) - 4px);
+}
+
+@media (max-width: 768px) {
+  .sec-title {
+    font-size: 1.5rem;
+  }
 }

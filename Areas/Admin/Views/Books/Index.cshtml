@@ -1,0 +1,155 @@
+@model E_Commerce.Areas.Admin.ViewModels.BookListViewModel
+@{
+    ViewData["Title"] = "Books";
+}
+
+<div class="adm-panel">
+    <form method="get" asp-action="Index" class="row g-2 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label small mb-1">Search</label>
+            <input type="text" name="search" value="@Model.Search" class="form-control" placeholder="Title, ISBN or author" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small mb-1">Category</label>
+            <select name="categoryId" class="form-select">
+                <option value="">All categories</option>
+                @foreach (var c in Model.Categories)
+                {
+                    <option value="@c.CategoryId" selected="@(Model.CategoryId == c.CategoryId)">@c.CategoryName</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small mb-1">Stock</label>
+            <select name="stock" class="form-select">
+                <option value="">All</option>
+                <option value="in" selected="@(Model.Stock == "in")">In stock</option>
+                <option value="low" selected="@(Model.Stock == "low")">Low (&lt; 10)</option>
+                <option value="out" selected="@(Model.Stock == "out")">Out of stock</option>
+            </select>
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn-adm w-100"><i class="bi bi-funnel"></i></button>
+        </div>
+        <div class="col-md-2 text-md-end">
+            <a class="btn-adm w-100" asp-action="Create"><i class="bi bi-plus-lg"></i> New book</a>
+        </div>
+    </form>
+</div>
+
+<div class="adm-panel table-responsive">
+    <table class="table adm-table align-middle">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Authors</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Books.Any())
+            {
+                <tr><td colspan="8" class="text-center text-muted py-4">No books found.</td></tr>
+            }
+            @foreach (var b in Model.Books)
+            {
+                var img = !string.IsNullOrWhiteSpace(b.ImageUrl) ? b.ImageUrl : b.CoverImage;
+                var authors = string.Join(", ", b.BookAuthors.Where(ba => ba.Author != null).Select(ba => ba.Author!.FullName));
+                <tr>
+                    <td>
+                        <img class="adm-thumb" src="@(string.IsNullOrWhiteSpace(img) ? "/images/placeholder.svg" : img)"
+                             alt="" onerror="this.src='/images/placeholder.svg'" />
+                    </td>
+                    <td>
+                        <div class="fw-semibold">@b.Title</div>
+                        <small class="text-muted">@(string.IsNullOrWhiteSpace(b.ISBN) ? "" : "ISBN: " + b.ISBN)</small>
+                    </td>
+                    <td>@(b.Category?.CategoryName ?? "-")</td>
+                    <td class="text-muted">@(string.IsNullOrEmpty(authors) ? "-" : authors)</td>
+                    <td>
+                        @if (b.DiscountPrice.HasValue)
+                        {
+                            <div class="fw-bold" style="color:var(--g)">$@b.DiscountPrice.Value.ToString("N2")</div>
+                            <small class="text-muted text-decoration-line-through">$@b.Price.ToString("N2")</small>
+                        }
+                        else
+                        {
+                            <span class="fw-bold">$@b.Price.ToString("N2")</span>
+                        }
+                    </td>
+                    <td>
+                        @if (b.StockQuantity <= 0)
+                        {
+                            <span class="stock-badge out">Out of stock</span>
+                        }
+                        else if (b.StockQuantity < 10)
+                        {
+                            <span class="stock-badge low">@b.StockQuantity left</span>
+                        }
+                        else
+                        {
+                            <span class="stock-badge in">@b.StockQuantity in stock</span>
+                        }
+                    </td>
+                    <td>
+                        <form asp-action="ToggleStatus" asp-route-id="@b.BookId" method="post">
+                            <button type="submit" class="pay-badge border-0 @(b.Status ? "paid" : "unpaid")" title="Click to toggle">
+                                @(b.Status ? "Active" : "Inactive")
+                            </button>
+                        </form>
+                    </td>
+                    <td class="text-nowrap text-end">
+                        <a class="btn btn-sm btn-outline-success" asp-action="Edit" asp-route-id="@b.BookId" title="Edit"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-sm btn-outline-secondary" asp-area="" asp-controller="Books" asp-action="Details" asp-route-id="@b.BookId"
+                           target="_blank" title="View in store"><i class="bi bi-eye"></i></a>
+                        <button type="button" class="btn btn-sm btn-outline-danger" title="Delete"
+                                data-bs-toggle="modal" data-bs-target="#del-@b.BookId"><i class="bi bi-trash3"></i></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (Model.TotalPages > 1)
+{
+    <nav>
+        <ul class="pagination pagination-sm">
+            @for (var p = 1; p <= Model.TotalPages; p++)
+            {
+                <li class="page-item @(p == Model.Page ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-search="@Model.Search"
+                       asp-route-categoryId="@Model.CategoryId" asp-route-stock="@Model.Stock" asp-route-page="@p">@p</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+@foreach (var b in Model.Books)
+{
+    <div class="modal fade" id="del-@b.BookId" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Delete <b>@b.Title</b>? This also removes its author links, cart entries and reviews.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form asp-action="Delete" asp-route-id="@b.BookId" method="post">
+                        <button type="submit" class="btn btn-danger"><i class="bi bi-trash3"></i> Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,6 +1,11 @@
 using E_Commerce.Data;
+using E_Commerce.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,9 +14,38 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<BookStoreDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<BookStoreDbContext>();
-builder.Services.AddControllersWithViews();
+
+// Localization (English / Khmer UI, cookie-based, URLs stay unchanged)
+builder.Services.AddLocalization(o => o.ResourcesPath = "Resources");
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization();
+builder.Services.Configure<RequestLocalizationOptions>(o =>
+{
+    o.DefaultRequestCulture = new RequestCulture("en-US", "en");
+    o.SupportedCultures = new List<CultureInfo> { new("en-US") };
+    o.SupportedUICultures = new List<CultureInfo> { new("en"), new("km") };
+    // Only the cookie provider: the browser language is ignored
+    o.RequestCultureProviders.Clear();
+    o.RequestCultureProviders.Add(new CookieRequestCultureProvider());
+});
+
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+        options.SlidingExpiration = true;
+        options.Cookie.HttpOnly = true;
+        options.Cookie.IsEssential = true;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+    });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -34,10 +68,14 @@ else
 }
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages();
 app.Run();

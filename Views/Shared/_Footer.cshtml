@@ -1,5 +1,32 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@using Microsoft.Extensions.Localization
+@using E_Commerce
+@inject IStringLocalizer<SharedResource> L
+<footer class="footer mt-5 py-4" style="background-color: var(--text); color: var(--bg);">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <h5 class="fw-bold mb-3" style="color: var(--bg);">
+                    <i class="bi bi-book-half me-1" style="color: var(--g);"></i> BookNest
+                </h5>
+                <p class="mb-0" style="opacity: .75;">@L["Your cozy corner for great books. Discover, read, and share stories that matter."]</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h6 class="fw-bold mb-3" style="color: var(--bg);">@L["Shop"]</h6>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a asp-controller="Home" asp-action="Index" class="text-decoration-none" style="color: var(--bg); opacity: .75;">@L["Home"]</a></li>
+                    <li class="mb-2"><a asp-controller="Books" asp-action="Index" class="text-decoration-none" style="color: var(--bg); opacity: .75;">@L["Books"]</a></li>
+                    <li class="mb-2"><a asp-controller="Contact" asp-action="Index" class="text-decoration-none" style="color: var(--bg); opacity: .75;">@L["Contact"]</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h6 class="fw-bold mb-3" style="color: var(--bg);">@L["Contact"]</h6>
+                <p class="mb-2" style="opacity: .75;"><i class="bi bi-geo-alt me-2"></i> Phnom Penh, Cambodia</p>
+                <p class="mb-0 small" style="opacity: .75;">&copy; @DateTime.Now.Year BookNest. @L["All rights reserved."]</p>
+            </div>
+        </div>
+        <hr style="border-color: var(--bg); opacity: .2;" />
+        <div class="text-center small" style="opacity: .75;">
+            @L["Crafted with"] <i class="bi bi-heart-fill text-danger"></i> @L["for book lovers"]
+        </div>
+    </div>
+</footer>

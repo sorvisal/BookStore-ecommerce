@@ -1,0 +1,40 @@
+@model Author
+@{
+    var isEdit = Model.AuthorId > 0;
+    ViewData["Title"] = isEdit ? "Edit author" : "New author";
+}
+
+<div class="adm-panel" style="max-width: 640px;">
+    <form asp-action="@(isEdit ? "Edit" : "Create")" method="post">
+        @if (isEdit)
+        {
+            <input type="hidden" asp-for="AuthorId" />
+        }
+        <div class="mb-3">
+            <label asp-for="FullName" class="form-label">Full name</label>
+            <input asp-for="FullName" class="form-control" />
+            <span asp-validation-for="FullName" class="text-danger small"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Country" class="form-label">Country</label>
+            <input asp-for="Country" class="form-control" />
+            <span asp-validation-for="Country" class="text-danger small"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Photo" class="form-label">Photo URL</label>
+            <input asp-for="Photo" class="form-control" placeholder="/images/authors/..." />
+            <span asp-validation-for="Photo" class="text-danger small"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Biography" class="form-label">Biography</label>
+            <textarea asp-for="Biography" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Biography" class="text-danger small"></span>
+        </div>
+        <button type="submit" class="btn-adm"><i class="bi bi-check-lg"></i> Save</button>
+        <a class="btn btn-outline-secondary ms-2" asp-action="Index">Cancel</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="~/Views/Shared/_ValidationScriptsPartial.cshtml" />
+}

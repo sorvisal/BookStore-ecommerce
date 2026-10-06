@@ -8,10 +8,10 @@ namespace E_Commerce.Models
         [Key]
         public int ShippingMethodId { get; set; }
 
-        [MaxLength(100)]
-        public string MethodName { get; set; }
+        [Required, StringLength(100)]
+        public string MethodName { get; set; } = string.Empty;
 
-        [Column(TypeName = "decimal(18,2)")]
+        [Column(TypeName = "decimal(18,2)"), Range(0, double.MaxValue)]
         public decimal? Price { get; set; }
 
         public int? EstimatedDays { get; set; }
