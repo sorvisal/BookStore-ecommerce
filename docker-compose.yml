@@ -1,0 +1,86 @@
+name: book-cambodia
+
+services:
+
+  # ==========================================
+  # SQL Server
+  # ==========================================
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: bookstore-db
+    restart: unless-stopped
+
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Create a .env file with MSSQL_SA_PASSWORD}
+
+    # For SSMS on Windows:
+    # Server: localhost,14333
+    # Login: sa
+    ports:
+      - "14333:1433"
+
+    volumes:
+      - sql_data:/var/opt/mssql
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -Q \"SELECT 1\" -b -o /dev/null"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+
+  # ==========================================
+  # ASP.NET Core E-Commerce
+  # ==========================================
+  web:
+    build:
+      # Dockerfile and E-Commerce.csproj
+      # are in the current project root
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: bookstore-web
+    restart: unless-stopped
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+
+      # SQL Server connection inside Docker network
+      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=BOOKSTOREDB;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;MultipleActiveResultSets=true"
+
+      # ASP.NET Core Data Protection keys
+      DataProtection__KeysPath: /app/keys
+
+    ports:
+      - "8080:8080"
+
+    volumes:
+      # Book images
+      - book_images:/app/wwwroot/images/books
+
+      # User avatar images
+      - avatar_images:/app/wwwroot/images/avatars
+
+      # ASP.NET Core Data Protection keys
+      - dp_keys:/app/keys
+
+
+# ==========================================
+# Persistent Volumes
+# ==========================================
+volumes:
+  sql_data:
+  book_images:
+  avatar_images:
+  dp_keys:
