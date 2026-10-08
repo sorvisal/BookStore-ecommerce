@@ -14,7 +14,20 @@ namespace E_Commerce.Controllers
     {
         private const decimal FreeShippingThreshold = 30m;
         private readonly BookStoreDbContext _db;
-        public CheckoutController(BookStoreDbContext db) => _db = db;
+        public CheckoutController(BookStoreDbContext db)
+        {
+            _db = db;
+        }
+
+        // Only Cash on Delivery and ABA Pay are offered at checkout. Card/Stripe methods are hidden.
+        private static List<PaymentMethod> GetAvailablePaymentMethods(IEnumerable<PaymentMethod> methods) =>
+            methods.Where(p =>
+                !p.MethodName.Contains("Credit", StringComparison.OrdinalIgnoreCase) &&
+                !p.MethodName.Contains("Card", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(p.Type, "CARD", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(p.Type, "STRIPE", StringComparison.OrdinalIgnoreCase) &&
+                p.Status)
+            .OrderBy(p => p.PaymentMethodId).ToList();
 
         private int CurrentUserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
@@ -40,8 +53,7 @@ namespace E_Commerce.Controllers
             }).ToList();
             vm.ShippingMethods = await _db.ShippingMethods.AsNoTracking()
                 .Where(s => s.Status).OrderBy(s => s.Price).ToListAsync();
-            vm.PaymentMethods = await _db.PaymentMethods.AsNoTracking()
-                .OrderBy(p => p.PaymentMethodId).ToListAsync();
+            vm.PaymentMethods = GetAvailablePaymentMethods(await _db.PaymentMethods.AsNoTracking().ToListAsync());
             vm.Subtotal = vm.Items.Sum(i => i.Subtotal);
             var price = vm.ShippingMethods.FirstOrDefault(m => m.ShippingMethodId == vm.ShippingMethodId)?.Price
                         ?? vm.ShippingMethods.FirstOrDefault()?.Price ?? 0m;
@@ -75,8 +87,7 @@ namespace E_Commerce.Controllers
             // Preselect the first shipping and payment method, then compute the display data
             var shippingMethods = await _db.ShippingMethods.AsNoTracking()
                 .Where(s => s.Status).OrderBy(s => s.Price).ToListAsync();
-            var paymentMethods = await _db.PaymentMethods.AsNoTracking()
-                .OrderBy(p => p.PaymentMethodId).ToListAsync();
+            var paymentMethods = GetAvailablePaymentMethods(await _db.PaymentMethods.AsNoTracking().ToListAsync());
             vm.ShippingMethodId = shippingMethods.FirstOrDefault()?.ShippingMethodId;
             vm.PaymentMethodId = paymentMethods.FirstOrDefault()?.PaymentMethodId;
             await FillDisplayDataAsync(vm, lines);
@@ -106,8 +117,8 @@ namespace E_Commerce.Controllers
             if (shipping == null)
                 ModelState.AddModelError(nameof(model.ShippingMethodId), "Please choose a valid shipping method.");
 
-            var payment = await _db.PaymentMethods
-                .FirstOrDefaultAsync(p => p.PaymentMethodId == model.PaymentMethodId);
+            var payment = GetAvailablePaymentMethods(await _db.PaymentMethods.ToListAsync())
+                .FirstOrDefault(p => p.PaymentMethodId == model.PaymentMethodId);
             if (payment == null)
                 ModelState.AddModelError(nameof(model.PaymentMethodId), "Please choose a valid payment method.");
 
@@ -124,10 +135,12 @@ namespace E_Commerce.Controllers
             var tax = 0m;
             var grandTotal = Math.Round(subtotal - discount + shippingFee + tax, 2);
 
-            // Cash on Delivery stays "Pending"; ABA Pay / Credit Card are simulated online payments
+            // Cash on Delivery stays unpaid until delivery. ABA Pay is simulated and paid immediately.
             var isCod = string.Equals(payment!.Type, "COD", StringComparison.OrdinalIgnoreCase)
                         || payment.MethodName.Contains("Cash", StringComparison.OrdinalIgnoreCase);
+            var paidNow = !isCod;
 
+            var createdOrderId = 0;
             await using var tx = await _db.Database.BeginTransactionAsync();
             try
             {
@@ -151,7 +164,7 @@ namespace E_Commerce.Controllers
                     TotalAmount = grandTotal,
                     OrderStatus = "Pending",
                     Status = "Pending",
-                    PaymentStatus = isCod ? "Unpaid" : "Paid",
+                    PaymentStatus = paidNow ? "Paid" : "Unpaid",
                     CreatedAt = now
                 };
                 _db.Orders.Add(order);
@@ -178,18 +191,17 @@ namespace E_Commerce.Controllers
                     OrderId = order.OrderId,
                     PaymentMethodId = payment.PaymentMethodId,
                     Amount = grandTotal,
-                    TransactionReference = isCod ? "" : $"TXN-{now:yyyyMMdd}-{order.OrderId:D4}",
+                    TransactionReference = paidNow ? $"TXN-{now:yyyyMMdd}-{order.OrderId:D4}" : "",
                     QRCode = "",
-                    PaidDate = isCod ? (DateTime?)null : now,
-                    Status = isCod ? "Pending" : "Paid",
-                    Remark = isCod ? "" : "Simulated online payment - no real payment gateway is connected."
+                    PaidDate = paidNow ? now : (DateTime?)null,
+                    Status = paidNow ? "Paid" : "Pending",
+                    Remark = paidNow ? "Simulated online payment - no real payment gateway is connected." : ""
                 });
 
                 _db.CartItems.RemoveRange(lines);
                 await _db.SaveChangesAsync();
                 await tx.CommitAsync();
-
-                return RedirectToAction(nameof(Success), new { id = order.OrderId });
+                createdOrderId = order.OrderId;
             }
             catch
             {
@@ -197,6 +209,8 @@ namespace E_Commerce.Controllers
                 TempData["Error"] = "Something went wrong while placing your order. Please try again.";
                 return RedirectToAction("Index", "Cart");
             }
+
+            return RedirectToAction(nameof(Success), new { id = createdOrderId });
         }
 
         [HttpGet]
@@ -211,5 +225,6 @@ namespace E_Commerce.Controllers
             if (order == null) return NotFound();
             return View(order);
         }
+
     }
 }

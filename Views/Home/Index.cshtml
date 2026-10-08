@@ -9,7 +9,7 @@
         ("How long does delivery take?",
          "Orders in Phnom Penh usually arrive within 1 to 2 days, and other provinces within 3 to 5 working days. Orders over $30 get free delivery."),
         ("What payment methods do you accept?",
-         "Cash on Delivery, ABA Pay and credit card (you can pay when you receive your books)."),
+         "Cash on Delivery and ABA Pay (you can pay instantly online or when you receive your books)."),
         ("Can I cancel or change my order?",
          "You can cancel an order yourself from My orders while its status is Pending. After it is processed, please contact us."),
         ("What if a book is out of stock?",
@@ -101,27 +101,6 @@
         </div>
         <script type="application/ld+json">@Html.Raw(faqJsonLd)</script>
     </section>
-
-    @if (Model.BestSellers.Any())
-    {
-        <section class="mb-5">
-            <div class="sec-head d-flex justify-content-between align-items-end flex-wrap gap-2">
-                <div>
-                    <span class="sec-eyebrow">@L["Reader favorites"]</span>
-                    <h3 class="sec-title">@L["Best"] <span class="hl">@L["Sellers"]</span></h3>
-                </div>
-                <a class="btn-soft btn" asp-controller="Books" asp-action="Index">@L["View all"] <i class="bi bi-arrow-right"></i></a>
-            </div>
-            <div class="row g-3">
-                @foreach (var book in Model.BestSellers)
-                {
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <partial name="_BookCard" model="book" />
-                    </div>
-                }
-            </div>
-        </section>
-    }
 
     @if (Model.Categories.Any())
     {

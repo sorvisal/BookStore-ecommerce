@@ -54,7 +54,6 @@ builder.Services
     });
 
 builder.Services.AddAuthorization();
-
 var app = builder.Build();
 
 // ---------- Seed the database ----------

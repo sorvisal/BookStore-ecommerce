@@ -6,7 +6,6 @@ namespace E_Commerce.ViewModels
     {
         public List<Book> FeaturedBooks { get; set; } = new();
         public List<Book> NewArrivals { get; set; } = new();
-        public List<Book> BestSellers { get; set; } = new();
         public List<CategoryWithCount> Categories { get; set; } = new();
     }
 

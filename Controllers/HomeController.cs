@@ -43,26 +43,6 @@ namespace E_Commerce.Controllers
                 .Take(8)
                 .ToList();
 
-            model.BestSellers = _context.Books
-                .AsNoTracking()
-                .Where(b => b.Status)
-                .Include(b => b.Category)
-                .Include(b => b.Publisher)
-                .Include(b => b.BookAuthors).ThenInclude(ba => ba.Author)
-                .Select(b => new
-                {
-                    Book = b,
-                    TotalQty = b.OrderDetails
-                        .Where(od => od.Order != null)
-                        .Where(od => od.Order!.OrderStatus != "Cancelled" && od.Order.Status != "Cancelled")
-                        .Sum(od => od.Quantity)
-                })
-                .OrderByDescending(x => x.TotalQty)
-                .ThenByDescending(x => x.Book.CreatedAt)
-                .Take(8)
-                .Select(x => x.Book)
-                .ToList();
-
             model.Categories = _context.Categories
                 .AsNoTracking()
                 .Where(c => c.Status)

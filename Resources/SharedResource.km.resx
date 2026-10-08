@@ -411,6 +411,12 @@
   <data name="Payment method" xml:space="preserve">
     <value>វិធីបង់ប្រាក់</value>
   </data>
+  <data name="Please choose a rating from 1 to 5 stars." xml:space="preserve">
+    <value>សូមជ្រើសរើសការវាយតម្លៃពី ១ ទៅ ៥ ផ្កាយ។</value>
+  </data>
+  <data name="Pay instantly with ABA mobile" xml:space="preserve">
+    <value>បង់ប្រាក់ភ្លាមៗតាមរយៈ ABA Mobile</value>
+  </data>
   <data name="Pay when you receive your books" xml:space="preserve">
     <value>បង់នៅពេលទទួលសៀវភៅ</value>
   </data>
@@ -681,8 +687,8 @@
   <data name="What payment methods do you accept?" xml:space="preserve">
     <value>អ្នកទទួលវិធីបង់ប្រាក់បែបណាខ្លះ?</value>
   </data>
-  <data name="Cash on Delivery, ABA Pay and credit card (you can pay when you receive your books)." xml:space="preserve">
-    <value>បង់សាច់ប្រាក់នៅពេលទទួលទំនិញ ABA Pay និងកាតធនាគារ (អ្នកអាចបង់នៅពេលទទួលសៀវភៅ)។</value>
+  <data name="Cash on Delivery and ABA Pay (you can pay instantly online or when you receive your books)." xml:space="preserve">
+    <value>បង់ប្រាក់ពេលទទួលទំនិញ (COD) និង ABA Pay (អ្នកអាចបង់ប្រាក់ភ្លាមៗតាមអនឡាញ ឬពេលទទួលទំនិញ)។</value>
   </data>
   <data name="Can I cancel or change my order?" xml:space="preserve">
     <value>តើខ្ញុំអាចលុបចោល ឬផ្លាស់ប្ដូរការបញ្ជាទិញបានទេ?</value>
@@ -709,3 +715,4 @@
     <value>ចូលគណនី បើក "ការបញ្ជាទិញរបស់ខ្ញុំ" ហើយជ្រើសរើសការបញ្ជាទិញរបស់អ្នក ដើម្បីមើលស្ថានភាព (រង់ចាំ កំពុងដំណើរការ កំពុងដឹកជញ្ជូន ដឹកជញ្ជូនរួច)។</value>
   </data>
 </root>
+

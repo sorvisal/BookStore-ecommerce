@@ -159,7 +159,8 @@ namespace E_Commerce.Controllers
 
             if (model.NewReview.Rating < 1 || model.NewReview.Rating > 5)
             {
-                ModelState.AddModelError(string.Empty, "Rating must be between 1 and 5.");
+                TempData["Error"] = "Please choose a rating from 1 to 5 stars.";
+                return RedirectToAction("Details", new { id = bookId });
             }
 
             if (ModelState.IsValid)

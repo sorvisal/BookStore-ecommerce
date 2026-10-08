@@ -411,6 +411,12 @@
   <data name="Payment method" xml:space="preserve">
     <value>Payment method</value>
   </data>
+  <data name="Please choose a rating from 1 to 5 stars." xml:space="preserve">
+    <value>Please choose a rating from 1 to 5 stars.</value>
+  </data>
+  <data name="Pay instantly with ABA mobile" xml:space="preserve">
+    <value>Pay instantly with ABA mobile</value>
+  </data>
   <data name="Pay when you receive your books" xml:space="preserve">
     <value>Pay when you receive your books</value>
   </data>
@@ -681,8 +687,8 @@
   <data name="What payment methods do you accept?" xml:space="preserve">
     <value>What payment methods do you accept?</value>
   </data>
-  <data name="Cash on Delivery, ABA Pay and credit card (you can pay when you receive your books)." xml:space="preserve">
-    <value>Cash on Delivery, ABA Pay and credit card (you can pay when you receive your books).</value>
+  <data name="Cash on Delivery and ABA Pay (you can pay instantly online or when you receive your books)." xml:space="preserve">
+    <value>Cash on Delivery and ABA Pay (you can pay instantly online or when you receive your books).</value>
   </data>
   <data name="Can I cancel or change my order?" xml:space="preserve">
     <value>Can I cancel or change my order?</value>

@@ -8,10 +8,78 @@
     string PayIcon(string name) =>
         name.Contains("Cash", StringComparison.OrdinalIgnoreCase) ? "bi-cash-coin" :
         name.Contains("ABA", StringComparison.OrdinalIgnoreCase) ? "bi-phone" :
-        name.Contains("Credit", StringComparison.OrdinalIgnoreCase) || name.Contains("Card", StringComparison.OrdinalIgnoreCase) ? "bi-credit-card" :
         "bi-wallet2";
 }
 <link rel="stylesheet" href="~/css/checkout.css" asp-append-version="true" />
+<style>
+    /* ABA QR box inside the order summary */
+    .co-qr {
+        margin: 1rem 0;
+        padding: 1rem;
+        border: 1px dashed var(--g);
+        border-radius: 16px;
+        background: var(--bg-soft);
+        text-align: center;
+        animation: coQrIn .3s ease;
+    }
+
+    .co-qr-head {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: .5rem;
+        font-weight: 700;
+        color: var(--g);
+        margin-bottom: .75rem;
+    }
+
+    .co-qr-box {
+        display: inline-block;
+        background: #fff;
+        border-radius: 14px;
+        padding: 10px;
+        box-shadow: var(--shadow);
+    }
+
+        .co-qr-box img {
+            display: block;
+            width: 220px;
+            max-width: 100%;
+            height: auto;
+        }
+
+    .co-qr-amount {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: .8rem;
+        font-size: .95rem;
+    }
+
+        .co-qr-amount b {
+            color: var(--g);
+            font-size: 1.15rem;
+        }
+
+    .co-qr-note {
+        margin: .5rem 0 0;
+        font-size: .82rem;
+        line-height: 1.5;
+        color: var(--muted);
+    }
+
+    @@keyframes coQrIn {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+</style>
 
 <div class="container py-4 co-page">
     <h2 class="co-title mb-3">@L["Checkout"]</h2>
@@ -77,7 +145,8 @@
                     @foreach (var p in Model.PaymentMethods)
                     {
                         <label class="co-radio">
-                            <input type="radio" asp-for="PaymentMethodId" value="@p.PaymentMethodId" />
+                            <input type="radio" asp-for="PaymentMethodId" value="@p.PaymentMethodId"
+                                   data-aba="@(p.MethodName.Contains("ABA", StringComparison.OrdinalIgnoreCase) ? "1" : "0")" />
                             <span class="co-radio-body">
                                 <span class="d-flex align-items-center gap-2">
                                     <i class="bi @PayIcon(p.MethodName) co-pay-icon"></i>
@@ -86,6 +155,10 @@
                                         @if (p.MethodName.Contains("Cash", StringComparison.OrdinalIgnoreCase))
                                         {
                                             <span class="co-radio-note">@L["Pay when you receive your books"]</span>
+                                        }
+                                        else if (p.MethodName.Contains("ABA", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <span class="co-radio-note">@L["Pay instantly with ABA mobile"]</span>
                                         }
                                     </span>
                                 </span>
@@ -115,6 +188,15 @@
                     <div class="co-row"><span>@L["Shipping"]</span><span id="coShipping">@(Model.ShippingFee == 0 ? L["Free"].Value : "$" + Model.ShippingFee.ToString("N2"))</span></div>
                     <div class="co-total"><span>@L["Total"]</span><span id="coTotal">$@Model.Total.ToString("N2")</span></div>
 
+                    <div class="co-qr" id="coQr" hidden>
+                        <div class="co-qr-head"><i class="bi bi-qr-code-scan"></i> @L["Scan to pay with ABA Mobile"]</div>
+                        <div class="co-qr-box">
+                            <img src="~/images/aba-qr.png" alt="ABA QR" onerror="this.style.display='none'" />
+                        </div>
+                        <div class="co-qr-amount"><span>@L["Amount to pay"]</span><b id="coQrAmount">$@Model.Total.ToString("N2")</b></div>
+                        <p class="co-qr-note">@L["After you pay, click Place order to confirm your order."]</p>
+                    </div>
+
                     <button type="submit" class="co-submit" id="coSubmit">@L["Place order"]</button>
                     <a class="co-back" asp-controller="Cart" asp-action="Index"><i class="bi bi-arrow-left"></i> @L["Back to cart"]</a>
                     <div class="co-trust">
@@ -134,6 +216,8 @@
         var freeShip = subtotalC >= thresholdC;
         var shipEl = document.getElementById('coShipping');
         var totalEl = document.getElementById('coTotal');
+        var qrEl = document.getElementById('coQr');
+        var qrAmtEl = document.getElementById('coQrAmount');
         const T = {
             free: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(L["Free"].Value)),
             placing: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(L["Placing order..."].Value))
@@ -147,11 +231,22 @@
             var feeC = freeShip ? 0 : priceC;
             shipEl.textContent = feeC === 0 ? T.free : fmt(feeC);
             totalEl.textContent = fmt(subtotalC + feeC);
+            qrAmtEl.textContent = fmt(subtotalC + feeC);
         }
         document.querySelectorAll('input[name="ShippingMethodId"]').forEach(function (r) {
             r.addEventListener('change', update);
         });
         update();
+
+        // Show the ABA QR code only when ABA Pay is selected
+        function updateQr() {
+            var p = document.querySelector('input[name="PaymentMethodId"]:checked');
+            qrEl.hidden = !(p && p.getAttribute('data-aba') === '1');
+        }
+        document.querySelectorAll('input[name="PaymentMethodId"]').forEach(function (r) {
+            r.addEventListener('change', updateQr);
+        });
+        updateQr();
 
         // Protect against double clicks
         var form = document.getElementById('coForm');

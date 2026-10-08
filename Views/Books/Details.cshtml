@@ -67,7 +67,12 @@
 
     <div class="row">
         <div class="col-md-8">
-            <h5>@L["Reviews"] (@Model.Reviews.Count) - @L["Average"]: @Model.AverageRating.ToString("0.0")</h5>
+            <h5>@L["Reviews"] (@Model.Reviews.Count) - @L["Average"]: <span class="text-warning">@for (var s = 1; s <= 5; s++)
+{
+    var halfAvg = (int)Math.Round(Model.AverageRating * 2);
+    var cls = halfAvg >= s * 2 ? "bi-star-fill" : (halfAvg >= s * 2 - 1 ? "bi-star-half" : "bi-star");
+    <i class="bi @cls"></i>
+}</span> @Model.AverageRating.ToString("0.0")</h5>
             @if (!Model.Reviews.Any())
             {
                 <p class="text-muted">@L["No reviews yet."]</p>
@@ -75,7 +80,10 @@
             @foreach (var r in Model.Reviews)
             {
                 <div class="border-bottom py-2">
-                    <strong>@r.UserName</strong> - <span class="text-warning">@(r.Rating)★</span> <small class="text-muted">@r.CreatedAt.ToString("MMM dd, yyyy")</small>
+                    <strong>@r.UserName</strong> - <span class="text-warning">@for (var s = 1; s <= 5; s++)
+{
+    <i class="bi @(s <= (r.Rating ?? 0) ? "bi-star-fill" : "bi-star")"></i>
+}</span> <small class="text-muted">@r.CreatedAt.ToString("MMM dd, yyyy")</small>
                     @if (!string.IsNullOrWhiteSpace(r.Comment))
                     {
                         <p class="mb-0">@r.Comment</p>
@@ -86,17 +94,18 @@
             @if (Model.CanReview)
             {
                 <h6 class="mt-3">@L["Write a review"]</h6>
-                <form asp-action="AddReview" method="post">
+                <form asp-action="AddReview" method="post" id="reviewForm">
                     <input type="hidden" asp-for="NewReview.BookId" />
                     <div class="mb-2">
                         <label class="form-label">@L["Rating"]</label>
-                        <select asp-for="NewReview.Rating" class="form-select" style="width:auto">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
+                        <div class="star-picker" id="starPicker" role="radiogroup" aria-label="@L["Rating"]">
+                            @for (var i = 1; i <= 5; i++)
+                            {
+                                <button type="button" class="star-btn" data-value="@i" role="radio" aria-checked="false" aria-label="@i"><i class="bi bi-star-fill"></i></button>
+                            }
+                        </div>
+                        <input type="hidden" name="NewReview.Rating" id="ratingInput" value="@(Model.NewReview?.Rating ?? 0)" />
+                        <div class="text-danger small mt-1 d-none" id="ratingError" data-text="@L["Please choose a rating from 1 to 5 stars."]"></div>
                     </div>
                     <div class="mb-2">
                         <label class="form-label">@L["Comment"]</label>
@@ -135,3 +144,58 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            var picker = document.getElementById('starPicker');
+            if (!picker) return;
+            var buttons = Array.prototype.slice.call(picker.querySelectorAll('.star-btn'));
+            var input = document.getElementById('ratingInput');
+            var errorEl = document.getElementById('ratingError');
+            var form = document.getElementById('reviewForm');
+
+            function paint(n) {
+                buttons.forEach(function (b) {
+                    var v = Number(b.getAttribute('data-value'));
+                    b.classList.toggle('active', v <= n);
+                    b.setAttribute('aria-checked', v === (Number(input.value) || 0) ? 'true' : 'false');
+                });
+            }
+
+            paint(Number(input.value) || 0);
+
+            function select(v) {
+                input.value = v;
+                paint(v);
+                errorEl.classList.add('d-none');
+            }
+
+            buttons.forEach(function (b) {
+                var v = Number(b.getAttribute('data-value'));
+                b.addEventListener('click', function () { select(v); });
+                b.addEventListener('mouseenter', function () { paint(v); });
+                b.addEventListener('focus', function () { paint(v); });
+                b.addEventListener('keydown', function (e) {
+                    var cur = Number(input.value) || 0;
+                    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { e.preventDefault(); select(Math.min(5, (cur || 0) + 1)); buttons[Math.min(5, (cur || 0) + 1) - 1].focus(); }
+                    else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { e.preventDefault(); select(Math.max(1, (cur || 1) - 1)); buttons[Math.max(1, (cur || 1) - 1) - 1].focus(); }
+                    else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(v); }
+                });
+            });
+            picker.addEventListener('mouseleave', function () { paint(Number(input.value) || 0); });
+
+            form.addEventListener('submit', function (e) {
+                var v = Number(input.value);
+                if (!Number.isInteger(v) || v < 1 || v > 5) {
+                    e.preventDefault();
+                    errorEl.textContent = errorEl.getAttribute('data-text');
+                    errorEl.classList.remove('d-none');
+                    buttons[0].focus();
+                    buttons[0].scrollIntoView({ block: 'center', behavior: 'smooth' });
+                }
+            });
+        })();
+    </script>
+}

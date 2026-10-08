@@ -231,7 +231,6 @@ namespace E_Commerce.Data
             {
                 new PaymentMethod { MethodName = "Cash on Delivery", Type = "COD",  Description = "Pay in cash when the order is delivered.", Status = true },
                 new PaymentMethod { MethodName = "ABA Pay",          Type = "QR",   Description = "Scan the ABA QR code to pay instantly.",  Status = true },
-                new PaymentMethod { MethodName = "Credit Card",      Type = "CARD", Description = "Visa or Mastercard payment on delivery.",  Status = true },
             };
 
             if (!context.PaymentMethods.Any())
@@ -247,6 +246,22 @@ namespace E_Commerce.Data
                 {
                     context.PaymentMethods.Add(method);
                 }
+            }
+            context.SaveChanges();
+
+            // Idempotent cleanup of the removed Credit Card method. Never delete rows old orders use.
+            var legacyCards = context.PaymentMethods
+                .Where(p => p.MethodName.Contains("Credit") || p.MethodName.Contains("Card")
+                            || p.Type == "CARD" || p.Type == "STRIPE")
+                .ToList();
+            foreach (var card in legacyCards)
+            {
+                var referenced = context.Orders.Any(o => o.PaymentMethodId == card.PaymentMethodId)
+                                  || context.Payments.Any(p => p.PaymentMethodId == card.PaymentMethodId);
+                if (referenced)
+                    card.Status = false; // keep history valid, hide from checkout
+                else
+                    context.PaymentMethods.Remove(card);
             }
             context.SaveChanges();
         }
