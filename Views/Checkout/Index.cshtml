@@ -189,12 +189,9 @@
                     <div class="co-total"><span>@L["Total"]</span><span id="coTotal">$@Model.Total.ToString("N2")</span></div>
 
                     <div class="co-qr" id="coQr" hidden>
-                        <div class="co-qr-head"><i class="bi bi-qr-code-scan"></i> @L["Scan to pay with ABA Mobile"]</div>
-                        <div class="co-qr-box">
-                            <img src="~/images/aba-qr.png" alt="ABA QR" onerror="this.style.display='none'" />
-                        </div>
+                        <div class="co-qr-head"><i class="bi bi-qr-code-scan"></i> @L["Pay with ABA Mobile"]</div>
                         <div class="co-qr-amount"><span>@L["Amount to pay"]</span><b id="coQrAmount">$@Model.Total.ToString("N2")</b></div>
-                        <p class="co-qr-note">@L["After you pay, click Place order to confirm your order."]</p>
+                        <p class="co-qr-note">@L["You will get a QR code with your exact total on the next step."]</p>
                     </div>
 
                     <button type="submit" class="co-submit" id="coSubmit">@L["Place order"]</button>

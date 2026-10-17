@@ -1,5 +1,6 @@
 using E_Commerce.Data;
 using E_Commerce.Models;
+using E_Commerce.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +23,13 @@ namespace E_Commerce.Areas.Admin.Controllers
         };
 
         private readonly BookStoreDbContext _db;
-        public OrdersController(BookStoreDbContext db) => _db = db;
+        private readonly AbaPaymentService _abaPayments;
+
+        public OrdersController(BookStoreDbContext db, AbaPaymentService abaPayments)
+        {
+            _db = db;
+            _abaPayments = abaPayments;
+        }
 
         private IQueryable<Order> ApplyFilters(string? search, DateTime? from, DateTime? to)
         {
@@ -153,6 +160,37 @@ namespace E_Commerce.Areas.Admin.Controllers
             }
 
             TempData["Success"] = $"Order status updated to {status}.";
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        /// <summary>
+        /// Manually confirms a pending ABA (KHQR) payment. Uses the same
+        /// idempotent routine as the automatic status check.
+        /// </summary>
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkPaid(int id)
+        {
+            var order = await _db.Orders
+                .Include(o => o.Payment).ThenInclude(p => p!.PaymentMethod)
+                .FirstOrDefaultAsync(o => o.OrderId == id);
+            if (order == null) return NotFound();
+
+            var method = order.Payment?.PaymentMethod;
+            bool isAba = method != null &&
+                (method.MethodName.Contains("ABA", StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(method.Type, "ABA", StringComparison.OrdinalIgnoreCase));
+            bool isCod = method != null &&
+                (string.Equals(method.Type, "COD", StringComparison.OrdinalIgnoreCase) ||
+                 method.MethodName.Contains("Cash", StringComparison.OrdinalIgnoreCase));
+
+            if (!isAba && !isCod)
+            {
+                TempData["Error"] = "Only ABA Pay or Cash on Delivery orders can be marked as paid.";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            await _abaPayments.MarkAbaPaidAsync(id, AbaPaidSource.Admin);
+            TempData["Success"] = "Payment marked as paid.";
             return RedirectToAction(nameof(Details), new { id });
         }
     }

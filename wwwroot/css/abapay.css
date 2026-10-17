@@ -1,0 +1,284 @@
+/* ABA Pay (KHQR) page (Views/Checkout/AbaPay.cshtml) — uses site.css variables */
+
+.abapay {
+    max-width: 460px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.abapay-head {
+    margin-bottom: 1.2rem;
+}
+
+.abapay-logo {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--gy);
+    color: var(--g-d);
+    font-size: 1.9rem;
+    display: grid;
+    place-items: center;
+    margin: 0 auto .7rem;
+}
+
+.abapay-head h2 {
+    font-family: 'Plus Jakarta Sans', 'MiSans Khmer', system-ui, sans-serif;
+    color: var(--text);
+    margin-bottom: .2rem;
+}
+
+.abapay-sub {
+    color: var(--muted);
+    margin: 0;
+    font-size: .92rem;
+}
+
+.abapay-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.4rem;
+}
+
+/* The QR area stays white in both themes so scanners read it reliably. */
+.abapay-qr {
+    display: inline-block;
+    background: #fff;
+    border-radius: 16px;
+    padding: 12px;
+    box-shadow: var(--shadow);
+}
+
+    .abapay-qr img {
+        display: block;
+        width: 260px;
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+    }
+
+.abapay-amount {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    font-size: .95rem;
+    color: var(--text);
+}
+
+    .abapay-amount b {
+        color: var(--g);
+        font-size: 1.25rem;
+    }
+
+.abapay-timer {
+    margin: .7rem 0 0;
+    font-size: .9rem;
+    color: var(--muted);
+}
+
+    .abapay-timer b {
+        color: var(--text);
+        font-variant-numeric: tabular-nums;
+    }
+
+    .abapay-timer.is-expired b {
+        color: #d9534f;
+    }
+
+.abapay-note {
+    margin: .7rem 0 0;
+    font-size: .88rem;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+.abapay-open {
+    margin-top: 1.1rem;
+}
+
+.abapay-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    margin-top: 1rem;
+    padding: .6rem .9rem;
+    border-radius: 12px;
+    background: var(--bg-soft);
+    color: var(--muted);
+    font-size: .9rem;
+}
+
+    .abapay-status i {
+        color: var(--g);
+    }
+
+.abapay-check {
+    width: 100%;
+    margin-top: .9rem;
+    cursor: pointer;
+}
+
+.abapay-foot {
+    margin-top: 1rem;
+    font-size: .85rem;
+    color: var(--muted);
+}
+
+.abapay-hint {
+    margin: .6rem 0 0;
+    font-size: .85rem;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+/* Right-hand order summary stays visible after the payment completes. */
+.abapay-summary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.2rem;
+    line-height: 1.5;
+}
+
+    .abapay-summary h5 {
+        margin: 0 0 .8rem;
+        color: var(--text);
+    }
+
+.abapay-summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .35rem 0;
+    color: var(--text);
+}
+
+    .abapay-summary-row b {
+        color: var(--g);
+    }
+
+.abapay-pay-badge {
+    display: inline-block;
+    padding: .2rem .65rem;
+    border-radius: 999px;
+    font-size: .8rem;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+    .abapay-pay-badge.is-unpaid {
+        background: #fff3cd;
+        color: #8a6d3b;
+    }
+
+    .abapay-pay-badge.is-paid {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+
+/* DONE state: replaces the QR card once the payment is received. */
+.abapay-done {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.6rem 1.4rem;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.abapay-checkmark {
+    width: 84px;
+    height: 84px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    background: var(--g);
+    color: #fff;
+    font-size: 2.6rem;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 0 0 0 greenyellow;
+    animation: abapay-pop .5s ease-out both, abapay-ring 1.4s ease-out .35s 2;
+}
+
+@keyframes abapay-pop {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.12);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes abapay-ring {
+    0% {
+        box-shadow: 0 0 0 0 greenyellow;
+    }
+
+    100% {
+        box-shadow: 0 0 0 18px rgba(173, 255, 47, 0);
+    }
+}
+
+.abapay-done-title {
+    margin: 0 0 .15rem;
+    color: var(--g-d);
+    font-size: 1.8rem;
+}
+
+.abapay-done-sub {
+    margin: 0 0 1rem;
+    color: var(--muted);
+}
+
+.abapay-done-rows {
+    text-align: left;
+    margin: 0 0 1rem;
+}
+
+.abapay-done-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .4rem 0;
+    color: var(--text);
+}
+
+    .abapay-done-row b {
+        color: var(--text);
+    }
+
+.abapay-done-actions {
+    display: grid;
+    gap: .6rem;
+}
+
+.abapay-done-redirect {
+    margin: 1rem 0 0;
+    font-size: .85rem;
+    color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .abapay-checkmark {
+        animation: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .abapay-qr img {
+        width: 220px;
+    }
+}

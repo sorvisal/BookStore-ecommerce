@@ -4,6 +4,8 @@
 @model Order
 @{
     ViewData["Title"] = "Order placed";
+    var isPaid = string.Equals(Model.Payment?.Status, "Paid", StringComparison.OrdinalIgnoreCase)
+                 || string.Equals(Model.PaymentStatus, "Paid", StringComparison.OrdinalIgnoreCase);
 }
 <link rel="stylesheet" href="~/css/checkout.css" asp-append-version="true" />
 
@@ -16,7 +18,7 @@
         <div class="co-success-card">
             <div class="co-row"><span>@L["Order number"]</span><b>@Model.OrderNumber</b></div>
             <div class="co-row"><span>@L["Date"]</span><span>@Model.OrderDate.ToString("dd MMM yyyy, HH:mm")</span></div>
-            <div class="co-row"><span>@L["Payment"]</span><span>@Model.Payment?.PaymentMethod?.MethodName (@Model.Payment?.Status)</span></div>
+            <div class="co-row"><span>@L["Payment"]</span><span>@Model.Payment?.PaymentMethod?.MethodName <span class="badge @(isPaid ? "text-bg-success" : "text-bg-warning")">@(isPaid ? L["Paid"] : L["Unpaid"])</span></span></div>
             <div class="co-row">
                 <span>@L["Delivery to"]</span>
                 <span class="text-end">@Model.ReceiverName &middot; @Model.Phone<br />@Model.ShippingAddress</span>

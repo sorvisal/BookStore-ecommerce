@@ -8,6 +8,13 @@
     var icons = new[] { "bi-receipt", "bi-box-seam", "bi-truck", "bi-house-check" };
     var idx = Array.IndexOf(flow, Model.Status);
     var confirmCancel = L["Cancel this order?"].Value;
+    var method = Model.Payment?.PaymentMethod;
+    var isAba = method != null &&
+        (method.MethodName.Contains("ABA", StringComparison.OrdinalIgnoreCase) ||
+         string.Equals(method.Type, "ABA", StringComparison.OrdinalIgnoreCase));
+    var paymentStatus = Model.Payment?.Status ?? "Unpaid";
+    var isPaid = string.Equals(paymentStatus, "Paid", StringComparison.OrdinalIgnoreCase)
+                 || string.Equals(Model.PaymentStatus, "Paid", StringComparison.OrdinalIgnoreCase);
 }
 <link rel="stylesheet" href="~/css/orders.css" asp-append-version="true" />
 <div class="container py-4">
@@ -61,9 +68,18 @@
                 <h5>@L["Delivery & payment"]</h5>
                 <p class="mb-1"><i class="bi bi-geo-alt"></i> @Model.ShippingAddress</p>
                 <p class="mb-1"><i class="bi bi-truck"></i> @Model.ShippingMethod?.MethodName</p>
-                <p class="mb-0"><i class="bi bi-credit-card"></i> @Model.Payment?.PaymentMethod?.MethodName (@Model.Payment?.Status)</p>
+                <p class="mb-0">
+                    <i class="bi bi-credit-card"></i> @method?.MethodName
+                    <span class="badge @(isPaid ? "text-bg-success" : "text-bg-warning")">@(isPaid ? L["Paid"] : L["Unpaid"])</span>
+                </p>
             </div>
             <div class="d-grid gap-2 no-print">
+                @if (isAba && !isPaid && Model.Status != "Cancelled")
+                {
+                    <a class="btn btn-primary" asp-controller="Checkout" asp-action="AbaPay" asp-route-id="@Model.OrderId">
+                        <i class="bi bi-qr-code-scan"></i> @L["Pay now with ABA"]
+                    </a>
+                }
                 <button type="button" class="btn btn-outline-dark" onclick="window.print()"><i class="bi bi-printer"></i> @L["Print invoice"]</button>
                 @if (Model.Status == "Pending")
                 {

@@ -1,0 +1,288 @@
+@model AbaPayViewModel
+@{
+    ViewData["Title"] = L["Pay with ABA Mobile"].Value;
+    var expiresUnix = Model.ExpiresAtUtc?.ToUnixTimeSeconds();
+}
+<link rel="stylesheet" href="~/css/checkout.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/abapay.css" asp-append-version="true" />
+
+<div class="container py-4 co-page">
+    <div class="co-steps mb-4">
+        <div class="co-step done"><span class="co-dot"><i class="bi bi-check"></i></span> @L["Cart"]</div>
+        <div class="co-step done"><span class="co-dot"><i class="bi bi-check"></i></span> @L["Checkout"]</div>
+        <div class="co-step active"><span class="co-dot">3</span> @L["Complete"]</div>
+    </div>
+
+    <div class="row g-4 justify-content-center"
+         id="abaPay"
+         data-status-url="@Url.Action("AbaStatus", "Checkout", new { id = Model.OrderId })"
+         data-success-url="@Url.Action("Success", "Checkout", new { id = Model.OrderId })"
+         data-order-url="@Url.Action("Details", "Orders", new { id = Model.OrderId })"
+         data-can-verify="@(Model.CanVerifyPayment ? "1" : "0")"
+         data-expires="@(expiresUnix?.ToString() ?? "")"
+         data-label-paid="@L["Paid"]"
+         data-label-unpaid="@L["Unpaid"]"
+         data-msg-waiting="@L["Waiting for payment..."]"
+         data-msg-received="@L["Payment received!"]"
+         data-msg-expired="@L["QR expired"]"
+         data-msg-checking="@L["Checking..."]"
+         data-msg-manual="@L["We will confirm your payment shortly."]"
+         data-msg-redirecting="@L["Redirecting in {0}..."]">
+
+        <div class="col-lg-7 col-xl-6">
+            <div class="abapay">
+                <div class="abapay-head">
+                    <div class="abapay-logo"><i class="bi bi-qr-code-scan"></i></div>
+                    <h2>@L["Pay with ABA Mobile"]</h2>
+                    <p class="abapay-sub">@L["Order"] <b>@Model.OrderNumber</b></p>
+                </div>
+
+                <div class="abapay-card" id="abaQrCard">
+                    <div class="abapay-qr">
+                        <img src="@Model.QrImageSource" alt="ABA KHQR" onerror="this.style.display='none'" />
+                    </div>
+
+                    <div class="abapay-amount">
+                        <span>@L["Amount to pay"]</span>
+                        <b>$@Model.Amount.ToString("N2") @Model.Currency</b>
+                    </div>
+
+                    @if (Model.IsConfigured)
+                    {
+                        <p class="abapay-timer" id="abaTimer">
+                            <i class="bi bi-clock"></i> @L["Expires in"] <b id="abaTimerValue">--:--</b>
+                        </p>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.DeepLink))
+                    {
+                        <a class="co-btn abapay-open" href="@Model.DeepLink">@L["Open ABA Mobile"]</a>
+                    }
+
+                    <div class="abapay-status @(Model.CanVerifyPayment ? "" : "is-manual")" id="abaStatusBox" aria-live="polite">
+                        @if (Model.CanVerifyPayment)
+                        {
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-hourglass-split"></i>
+                        }
+                        <span id="abaStatusText">@(Model.CanVerifyPayment ? L["Waiting for payment..."] : L["We will confirm your payment shortly."])</span>
+                    </div>
+
+                    @if (Model.CanVerifyPayment)
+                    {
+                        <div id="abaCheckNowWrap" hidden>
+                            <button type="button" class="co-btn-outline abapay-check" id="abaCheck">@L["Check payment now"]</button>
+                            <p class="abapay-hint" id="abaNotReceived" hidden>@L["Not received yet. It can take a few seconds after you pay."]</p>
+                        </div>
+                    }
+
+                    <a class="co-btn-outline abapay-check" asp-action="Success" asp-route-id="@Model.OrderId">@L["Pay later"]</a>
+                </div>
+
+                <div class="abapay-done" id="abaDone" hidden aria-live="polite">
+                    <div class="abapay-checkmark" aria-hidden="true"><i class="bi bi-check-lg"></i></div>
+                    <h2 class="abapay-done-title" id="abaDoneTitle" tabindex="-1">@L["Done!"]</h2>
+                    <p class="abapay-done-sub">@L["Payment received"]</p>
+
+                    <div class="abapay-done-rows">
+                        <div class="abapay-done-row"><span>@L["Amount to pay"]</span><b>$@Model.Amount.ToString("N2") @Model.Currency</b></div>
+                        <div class="abapay-done-row"><span>@L["Order number"]</span><b>@Model.OrderNumber</b></div>
+                        <div class="abapay-done-row" id="abaPaidAtRow" hidden><span>@L["Date"]</span><b id="abaPaidAt"></b></div>
+                    </div>
+
+                    <div class="abapay-done-actions">
+                        <a class="co-btn" id="abaDoneOrder" asp-controller="Orders" asp-action="Details" asp-route-id="@Model.OrderId">@L["View my order"]</a>
+                        <a class="co-btn-outline" asp-controller="Books" asp-action="Index">@L["Continue shopping"]</a>
+                    </div>
+
+                    <p class="abapay-done-redirect" id="abaRedirectText" aria-live="polite"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5 col-xl-4">
+            <div class="abapay-summary" id="abaSummary">
+                <h5>@L["Summary"]</h5>
+                <div class="abapay-summary-row"><span>@L["Order number"]</span><b>@Model.OrderNumber</b></div>
+                <div class="abapay-summary-row"><span>@L["Amount to pay"]</span><b>$@Model.Amount.ToString("N2") @Model.Currency</b></div>
+                <hr />
+                <div class="abapay-summary-row">
+                    <span>@L["Payment"]</span>
+                    <span class="abapay-pay-badge is-unpaid" id="abaPayBadge">@L["Unpaid"]</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        var root = document.getElementById('abaPay');
+        if (!root) return;
+
+        var statusText = document.getElementById('abaStatusText');
+        var checkNowWrap = document.getElementById('abaCheckNowWrap');
+        var checkBtn = document.getElementById('abaCheck');
+        var notReceived = document.getElementById('abaNotReceived');
+        var qrCard = document.getElementById('abaQrCard');
+        var doneCard = document.getElementById('abaDone');
+        var doneTitle = document.getElementById('abaDoneTitle');
+        var doneOrder = document.getElementById('abaDoneOrder');
+        var payBadge = document.getElementById('abaPayBadge');
+        var paidAtRow = document.getElementById('abaPaidAtRow');
+        var paidAt = document.getElementById('abaPaidAt');
+        var redirectText = document.getElementById('abaRedirectText');
+        var timer = document.getElementById('abaTimer');
+        var timerVal = document.getElementById('abaTimerValue');
+
+        var canVerify = root.getAttribute('data-can-verify') === '1';
+        var statusUrl = root.getAttribute('data-status-url');
+        var successUrl = root.getAttribute('data-success-url');
+        var orderUrl = root.getAttribute('data-order-url');
+        var paidLabel = root.getAttribute('data-label-paid');
+        var expires = parseInt(root.getAttribute('data-expires') || '0', 10) || 0;
+
+        var T = {
+            waiting: root.getAttribute('data-msg-waiting'),
+            received: root.getAttribute('data-msg-received'),
+            expired: root.getAttribute('data-msg-expired'),
+            checking: root.getAttribute('data-msg-checking'),
+            manual: root.getAttribute('data-msg-manual'),
+            redirecting: root.getAttribute('data-msg-redirecting')
+        };
+
+        var done = false;
+        var pollTimer = null;
+        var countdownTimer = null;
+        var redirectTimer = null;
+
+        function showDone(paidAtText, redirectUrl) {
+            if (done) return;
+            done = true;
+            if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+            if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+
+            if (statusText) statusText.textContent = T.received;
+            if (qrCard) qrCard.hidden = true;
+            if (doneCard) doneCard.hidden = false;
+            if (payBadge) {
+                payBadge.classList.remove('is-unpaid');
+                payBadge.classList.add('is-paid');
+                payBadge.textContent = paidLabel || 'Paid';
+            }
+            if (orderUrl && doneOrder) doneOrder.setAttribute('href', orderUrl);
+            if (paidAtText && paidAt && paidAtRow) {
+                paidAt.textContent = paidAtText;
+                paidAtRow.hidden = false;
+            }
+            if (doneTitle) { doneTitle.setAttribute('tabindex', '-1'); doneTitle.focus(); }
+
+            var target = redirectUrl || successUrl;
+            var remaining = 4;
+            function paint() {
+                if (redirectText && T.redirecting) {
+                    redirectText.textContent = T.redirecting.replace('{0}', remaining);
+                }
+            }
+            paint();
+            redirectTimer = setInterval(function () {
+                remaining -= 1;
+                if (remaining <= 0) {
+                    clearInterval(redirectTimer);
+                    window.location.href = target;
+                    return;
+                }
+                paint();
+            }, 1000);
+        }
+
+        function stopPolling() {
+            if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+            if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+        }
+
+        function handle(d) {
+            if (!d || done) return;
+            if (d.status === 'paid') { showDone(d.paidAtText, d.redirectUrl); return; }
+            if (d.status === 'expired') {
+                if (statusText) statusText.textContent = T.expired;
+                if (timer) timer.classList.add('is-expired');
+                if (timerVal) timerVal.textContent = '00:00';
+                stopPolling();
+                return;
+            }
+            if (d.status === 'cancelled') {
+                if (statusText) statusText.textContent = T.expired;
+                if (timer) timer.classList.add('is-expired');
+                stopPolling();
+                return;
+            }
+            if (canVerify && statusText) statusText.textContent = T.waiting;
+        }
+
+        function fetchStatus(force) {
+            if (done) return Promise.resolve(null);
+            var url = statusUrl;
+            if (force) { url += (statusUrl.indexOf('?') >= 0 ? '&' : '?') + 'force=1'; }
+            return fetch(url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' })
+                .then(function (r) { return r.ok ? r.json() : null; })
+                .then(function (d) { handle(d); return d; })
+                .catch(function () { return null; });
+        }
+
+        // First check shortly after load, then keep polling. Live mode polls every
+        // 3 seconds; manual mode polls slowly (database only) so the page still
+        // updates by itself once the shop confirms the payment.
+        if (canVerify) {
+            setTimeout(function () { fetchStatus(false); }, 1000);
+            pollTimer = setInterval(function () { fetchStatus(false); }, 3000);
+            document.addEventListener('visibilitychange', function () {
+                if (!document.hidden) fetchStatus(false);
+            });
+            window.addEventListener('focus', function () { fetchStatus(false); });
+
+            setTimeout(function () {
+                if (!done && checkNowWrap) checkNowWrap.hidden = false;
+            }, 20000);
+
+            if (checkBtn) {
+                checkBtn.addEventListener('click', function () {
+                    if (done) return;
+                    checkBtn.disabled = true;
+                    if (statusText) statusText.textContent = T.checking;
+                    fetchStatus(true).then(function (d) {
+                        checkBtn.disabled = false;
+                        if (!done && (!d || d.status !== 'paid') && notReceived) notReceived.hidden = false;
+                    });
+                });
+            }
+        } else {
+            setTimeout(function () { fetchStatus(false); }, 2000);
+            pollTimer = setInterval(function () { fetchStatus(false); }, 10000);
+        }
+
+        // A live QR shows a countdown; when it reaches zero ask the server for the
+        // final state (it performs one last ABA check before reporting "expired").
+        if (expires && timerVal) {
+            var tick = function () {
+                if (done) return;
+                var left = expires - Math.floor(Date.now() / 1000);
+                if (left <= 0) {
+                    timerVal.textContent = '00:00';
+                    if (timer) timer.classList.add('is-expired');
+                    if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+                    fetchStatus(true);
+                    return;
+                }
+                var m = Math.floor(left / 60);
+                var s = left % 60;
+                timerVal.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+            };
+            tick();
+            countdownTimer = setInterval(tick, 1000);
+        }
+    })();
+</script>

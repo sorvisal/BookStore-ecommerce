@@ -711,7 +711,70 @@
   <data name="How can I track my order?" xml:space="preserve">
     <value>How can I track my order?</value>
   </data>
+  <data name="Pay with ABA Mobile" xml:space="preserve">
+    <value>Pay with ABA Mobile</value>
+  </data>
+  <data name="Amount to pay" xml:space="preserve">
+    <value>Amount to pay</value>
+  </data>
+  <data name="Open ABA Mobile" xml:space="preserve">
+    <value>Open ABA Mobile</value>
+  </data>
+  <data name="Waiting for payment..." xml:space="preserve">
+    <value>Waiting for payment...</value>
+  </data>
+  <data name="Payment received!" xml:space="preserve">
+    <value>Payment received!</value>
+  </data>
+  <data name="Checking..." xml:space="preserve">
+    <value>Checking...</value>
+  </data>
+  <data name="Expires in" xml:space="preserve">
+    <value>Expires in</value>
+  </data>
+  <data name="QR expired" xml:space="preserve">
+    <value>QR expired</value>
+  </data>
+  <data name="We will confirm your payment shortly." xml:space="preserve">
+    <value>We will confirm your payment shortly.</value>
+  </data>
+  <data name="I have paid" xml:space="preserve">
+    <value>I have paid</value>
+  </data>
+  <data name="Pay later" xml:space="preserve">
+    <value>Pay later</value>
+  </data>
+  <data name="Pay now with ABA" xml:space="preserve">
+    <value>Pay now with ABA</value>
+  </data>
+  <data name="You will get a QR code with your exact total on the next step." xml:space="preserve">
+    <value>You will get a QR code with your exact total on the next step.</value>
+  </data>
+  <data name="Paid" xml:space="preserve">
+    <value>Paid</value>
+  </data>
+  <data name="Unpaid" xml:space="preserve">
+    <value>Unpaid</value>
+  </data>
   <data name="Sign in, open My orders and choose your order to see its status (Pending, Processing, Shipped, Delivered)." xml:space="preserve">
     <value>Sign in, open My orders and choose your order to see its status (Pending, Processing, Shipped, Delivered).</value>
+  </data>
+  <data name="Done!" xml:space="preserve">
+    <value>Done!</value>
+  </data>
+  <data name="Payment received" xml:space="preserve">
+    <value>Payment received</value>
+  </data>
+  <data name="Check payment now" xml:space="preserve">
+    <value>Check payment now</value>
+  </data>
+  <data name="Not received yet. It can take a few seconds after you pay." xml:space="preserve">
+    <value>Not received yet. It can take a few seconds after you pay.</value>
+  </data>
+  <data name="We confirm your payment manually. This page updates by itself once the shop confirms it." xml:space="preserve">
+    <value>We confirm your payment manually. This page updates by itself once the shop confirms it.</value>
+  </data>
+  <data name="Redirecting in {0}..." xml:space="preserve">
+    <value>Redirecting in {0}...</value>
   </data>
 </root>

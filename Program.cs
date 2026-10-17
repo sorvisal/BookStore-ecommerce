@@ -1,5 +1,6 @@
 using E_Commerce.Data;
 using E_Commerce.Models;
+using E_Commerce.Services.Khqr;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
@@ -39,6 +40,19 @@ builder.Services.Configure<RequestLocalizationOptions>(o =>
 });
 
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+// Dynamic KHQR / ABA PayWay services
+builder.Services.AddMemoryCache();
+builder.Services.AddHttpClient<PayWayLinkClient>(client =>
+{
+    client.BaseAddress = new Uri("https://pwapp.ababank.com");
+    client.Timeout = TimeSpan.FromSeconds(20);
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    AllowAutoRedirect = false,
+});
+builder.Services.AddScoped<DynamicKhqrService>();
+builder.Services.AddScoped<E_Commerce.Services.AbaPaymentService>();
 
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

@@ -714,5 +714,68 @@
   <data name="Sign in, open My orders and choose your order to see its status (Pending, Processing, Shipped, Delivered)." xml:space="preserve">
     <value>ចូលគណនី បើក "ការបញ្ជាទិញរបស់ខ្ញុំ" ហើយជ្រើសរើសការបញ្ជាទិញរបស់អ្នក ដើម្បីមើលស្ថានភាព (រង់ចាំ កំពុងដំណើរការ កំពុងដឹកជញ្ជូន ដឹកជញ្ជូនរួច)។</value>
   </data>
+  <data name="Pay with ABA Mobile" xml:space="preserve">
+    <value>បង់ប្រាក់ដោយ ABA Mobile</value>
+  </data>
+  <data name="Amount to pay" xml:space="preserve">
+    <value>ចំនួនទឹកប្រាក់ត្រូវបង់</value>
+  </data>
+  <data name="Open ABA Mobile" xml:space="preserve">
+    <value>បើក ABA Mobile</value>
+  </data>
+  <data name="Waiting for payment..." xml:space="preserve">
+    <value>កំពុងរង់ចាំការបង់ប្រាក់...</value>
+  </data>
+  <data name="Payment received!" xml:space="preserve">
+    <value>បានទទួលការបង់ប្រាក់រួចហើយ!</value>
+  </data>
+  <data name="Checking..." xml:space="preserve">
+    <value>កំពុងពិនិត្យ...</value>
+  </data>
+  <data name="Expires in" xml:space="preserve">
+    <value>ផុតកំណត់ក្នុងរយៈពេល</value>
+  </data>
+  <data name="QR expired" xml:space="preserve">
+    <value>កូដ QR ផុតកំណត់ហើយ</value>
+  </data>
+  <data name="We will confirm your payment shortly." xml:space="preserve">
+    <value>យើងនឹងបញ្ជាក់ការបង់ប្រាក់របស់អ្នកក្នុងពេលឆាប់ៗនេះ។</value>
+  </data>
+  <data name="I have paid" xml:space="preserve">
+    <value>ខ្ញុំបានបង់ប្រាក់រួចហើយ</value>
+  </data>
+  <data name="Pay later" xml:space="preserve">
+    <value>បង់ប្រាក់ពេលក្រោយ</value>
+  </data>
+  <data name="Pay now with ABA" xml:space="preserve">
+    <value>បង់ប្រាក់ឥឡូវនេះដោយ ABA</value>
+  </data>
+  <data name="You will get a QR code with your exact total on the next step." xml:space="preserve">
+    <value>អ្នកនឹងទទួលបានកូដ QR ជាមួយចំនួនទឹកប្រាក់សរុបពិតប្រាកដនៅជំហានបន្ទាប់។</value>
+  </data>
+  <data name="Paid" xml:space="preserve">
+    <value>បានបង់ប្រាក់</value>
+  </data>
+  <data name="Unpaid" xml:space="preserve">
+    <value>មិនទាន់បង់ប្រាក់</value>
+  </data>
+  <data name="Done!" xml:space="preserve">
+    <value>រួចរាល់!</value>
+  </data>
+  <data name="Payment received" xml:space="preserve">
+    <value>បានទទួលការបង់ប្រាក់</value>
+  </data>
+  <data name="Check payment now" xml:space="preserve">
+    <value>ពិនិត្យការបង់ប្រាក់ឥឡូវនេះ</value>
+  </data>
+  <data name="Not received yet. It can take a few seconds after you pay." xml:space="preserve">
+    <value>មិនទាន់ទទួលបាននៅឡើយទេ។ វាអាចចំណាយពេលប៉ុន្មានវិនាទីបន្ទាប់ពីអ្នកបង់ប្រាក់។</value>
+  </data>
+  <data name="We confirm your payment manually. This page updates by itself once the shop confirms it." xml:space="preserve">
+    <value>យើងបញ្ជាក់ការបង់ប្រាក់របស់អ្នកដោយដៃ។ ទំព័រនេះនឹងធ្វើបច្ចុប្បន្នភាពដោយខ្លួនឯង នៅពេលហាងបញ្ជាក់រួច។</value>
+  </data>
+  <data name="Redirecting in {0}..." xml:space="preserve">
+    <value>កំពុងប្តូរទំព័រក្នុងរយៈពេល {0}...</value>
+  </data>
 </root>
 

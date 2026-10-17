@@ -28,6 +28,7 @@
 
     @foreach (var o in Model.Orders)
     {
+        var paid = string.Equals(o.PaymentStatus, "Paid", StringComparison.OrdinalIgnoreCase);
         <a class="order-card" asp-action="Details" asp-route-id="@o.OrderId">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <div>
@@ -41,6 +42,7 @@
                     </div>
                 </div>
                 <span class="st st-@o.Status">@L[o.Status]</span>
+                <span class="badge @(paid ? "text-bg-success" : "text-bg-warning")">@(paid ? L["Paid"] : L["Unpaid"])</span>
                 <div class="fw-bold fs-5 text-end">$@o.GrandTotal.GetValueOrDefault().ToString("N2")</div>
             </div>
         </a>

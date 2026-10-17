@@ -62,6 +62,18 @@ services:
       # ASP.NET Core Data Protection keys
       DataProtection__KeysPath: /app/keys
 
+      # ABA PayWay / dynamic KHQR.
+      # Leave these empty to run in manual mode (static QR, admin confirms the
+      # payment). Fill them in to generate a live KHQR per order.
+      Aba__PaymentLink: ${ABA_PAYMENT_LINK:-}
+      Aba__LinkAbaData: ${ABA_LINK_ABA_DATA:-}
+      Aba__MerchantName: ${ABA_MERCHANT_NAME:-}
+      Aba__BakongAccountId: ${ABA_BAKONG_ACCOUNT_ID:-}
+      Aba__AbaAccountNumberUsd: ${ABA_ACCOUNT_NUMBER_USD:-}
+      Aba__AbaAccountNumberKhr: ${ABA_ACCOUNT_NUMBER_KHR:-}
+      Aba__Currency: ${ABA_CURRENCY:-USD}
+      Aba__QrLifetimeMinutes: ${ABA_QR_LIFETIME_MINUTES:-10}
+
     ports:
       - "8080:8080"
 
